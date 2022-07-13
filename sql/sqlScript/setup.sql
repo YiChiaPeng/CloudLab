@@ -2,7 +2,7 @@
 登入sql 後 run  
 source /Users/1subtraction/Downloads/sql/sqlScript/setup.sql
 */
- DATABASE lab;
+
 CREATE DATABASE lab;
 USE lab;
 /*
