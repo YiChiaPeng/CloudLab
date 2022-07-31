@@ -1,3 +1,4 @@
+from flask_httpauth import HTTPBasicAuth
 
 '''
 定義User的resource
@@ -27,10 +28,10 @@ class User(Resource):
     要登陸才能執行
     把所有資料庫的user讀出出來
     '''
-    @auth.login_required
-    @app.route('/server/api/users', methods=['GET'])
-        
-    def get_user(self,id=0):
+    auth=HTTPBasicAuth()
+
+    @auth.login_required        
+    def GET(self,id=0):
         #連接資料庫
         connection=pymysql.connect(host='localhost',user='root',password='',db='lab',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
         try:
@@ -49,15 +50,12 @@ class User(Resource):
             result = cursor.fetchall()
             temp_arr=[]
             for user in result:
-                temp_arr.append(json.dumps(
-                    
-                        {
-                    
-                            "uId":user[uId]
-                            "uName":user[uName]
-                            "uPassword":user[uPassword]
-                            "uPrivilege":user[uPrivilege]
-                    
+                temp_arr.append(json.dumps(                    
+                        {                    
+                            "uId":user[uId],
+                            "uName":user[uName],
+                            "uPassword":user[uPassword],
+                            "uPrivilege":user[uPrivilege]                    
                         }
                     )    
                 )
