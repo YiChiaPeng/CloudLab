@@ -29,10 +29,17 @@ class User(Resource):
         super().__init__()  
         self.db_handler=DBhandler()
     
-           
-    def get(self,id):
-        results=self.db_handler.query("SELECT * FROM `user` WHERE `uId`={}".format(id),True)
-        return jsonify(results[0])
+    def get(self,id=0):
+        if id!=0:
+            results=self.db_handler.query("SELECT * FROM `user` WHERE `uId`={}".format(id),True)
+            return jsonify(results[0])
+        else:
+            results=self.db_handler.query("SELECT * FROM `user`",True)
+            #有多筆資料
+            items={}
+            for i in range(0,len(results)):
+                items.update({i:results[i]})
+                return jsonify(items)
             
         
         

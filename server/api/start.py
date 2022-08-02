@@ -20,6 +20,13 @@ app = Flask(__name__)
 '''
 Api要提供的resource放在resource
 '''
+'''
+string	文字類型(默認類型)
+int	整數
+float	浮點數
+path	跟 string 差不多，但可以有斜線 /
+uuid	UUID 字符串
+'''
 api = Api(app)
 api.add_resource(test, "/")
 api.add_resource(User, "/User/<string:id>")
