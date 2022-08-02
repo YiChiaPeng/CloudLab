@@ -1,21 +1,20 @@
+#!/bin/python3
+# 載入Flask套件
 from flask import Flask,jsonify
-from flask_restful import Api
-#驗證登錄
-from flask_httpauth import HTTPBasicAuth
+from flask_restful import Api, Resource
 
 
 '''--------------------------------------
     import api所提供的resouce file
 ---------------------------------------'''
-from resource.User import User
 from resource.index import test
-
+from resource.User import User
+from resource.Users import Users
 
 app = Flask(__name__)
 '''
 加一個驗證
 '''
-auth = HTTPBasicAuth()
 
 
 '''
@@ -23,6 +22,7 @@ Api要提供的resource放在resource
 '''
 api = Api(app)
 api.add_resource(test, "/")
-api.add_resource(User, "/user")
+api.add_resource(User, "/User/<string:id>")
+api.add_resource(Users, "/Users")
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8087,debug=True)
