@@ -2,9 +2,11 @@
 更改一個User的resource
 及提供的function
 '''
+from email import parser
 from flask import jsonify
 from flask_restful import Resource
 from common.DBhandler import DBhandler
+from flask_restful import reqparse
 '''
 我參考的命名規則
 ==========  =====================  ==================================
@@ -38,8 +40,15 @@ class User(Resource):
         
     
     
-    def post(self, filename):
-        pass
+    def post(self,id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('uId', required=True)
+        parser.add_argument('uName', required=True)
+        arg=parser.parse_args()
+        sql="INSERT INTO `user`(`uId`,`uPassword`,`uName`,`uPrivilege`) VALUES (\"{}\",\"{}\",\"{}\",\"{}\")".format(arg['uId'],"a"+arg['uId'],arg['uName'],'0')
+        self.db_handler.query(sql,False)
+
+        
 
     def put_users(self, uId,uName):
         connection=pymysql.connect(host='localhost',user='root',password='',db='lab',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
@@ -54,6 +63,7 @@ class User(Resource):
                 #執行到這一行指令時才是真正改變了數據庫，之前只是緩存在內存中
         finally:
             connection.commit()
+
 
     def delete(self, name):
         global users

@@ -10,6 +10,7 @@ from flask_restful import Api, Resource
 from resource.index import test
 from resource.User import User
 from resource.Users import Users
+from resource.login_handler import login_handler
 
 app = Flask(__name__)
 '''
@@ -24,5 +25,6 @@ api = Api(app)
 api.add_resource(test, "/")
 api.add_resource(User, "/User/<string:id>")
 api.add_resource(Users, "/Users")
+api.add_resource(login_handler,"/api/login")
 if __name__ == "__main__":
     app.run(port=8087,debug=True)
