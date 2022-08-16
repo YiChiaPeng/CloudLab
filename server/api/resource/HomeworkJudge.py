@@ -13,24 +13,19 @@ ALLOWED_EXTENSIONS = {'sof', 'pgv'}
 app = Flask(__name__)
 api = Api(app)
 
-class RunProgramming(Resource):
+class HomeworkJudge(Resource):
     '''
     利用form-data傳資料
-    上傳完PGV和SOF檔之後，之後就會燒程式進去DE0然後回傳law檔案回去
+    上傳完SOF檔之後，先拿作業的pgv檔做燒路，順便把波型檔輸出成txt檔案，和學生的sof檔一起存在資料夾內，然後拿這個txt檔案去跟助教燒出來的做比對，如果對回傳true，否則false
     Inputs:
-        userID:
-
-
-
-
-
-        Username:學生帳號
-        pgvFile:pgv檔案    <input type=file name=pgvFile>
+        className:哪個課程
+        homeworkName:課程的哪個作業           我的想法:/files/課程名稱/課程作業
+        userName:學生的帳號
         sofFile:sof檔案    <input type=file name=sofFile>
     Outputs:
-        law file:燒錄完的波型檔
-
-    還沒寫1.JWT驗證 2.排程系統 之後補上
+        json:{"score": ?
+              "openResult" : "true or false"}
+        True or False
     '''
     def get(self):
         return {'Msg': 'This is GET method!'}
@@ -38,8 +33,10 @@ class RunProgramming(Resource):
         #設定資料夾路徑
         LAFlag = 0
         succFlag = 0
-        Username = request.form["Username"]
-        UPLOAD_FOLDER = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + Username
+        className = request.form["className"]
+        homeworkName = request.form["homeworkName"]
+        userName = request.form["userName"]
+        UPLOAD_FOLDER = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName + "\\" + userName
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         # JWT = JWT_handler()
         # JWT.readToken()
@@ -57,7 +54,6 @@ class RunProgramming(Resource):
                 return filename
 
         # pgvDataPath = request.get_json()
-        if(isHW)
         try:
             #檢查資料夾存不存在，if not then create the folder
             if not os.path.isdir(UPLOAD_FOLDER):
@@ -68,15 +64,16 @@ class RunProgramming(Resource):
 
             #上傳sof,pgv檔到files
             sofName = upload_file("sofFile")
-            pgvName = upload_file("pgvFile")
 
             # print(pgvDataPath['codePath'])
             batPath = "C:\\git-repos\\ours\\CloudLab\\server\\api\\common\\"
 
             # batPath = "..\\common\\PG_run.bat"
 
+            homeworkPath = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName
+
             ###write PG_run bat file
-            with open(UPLOAD_FOLDER + "\\" + pgvName,'r') as f:
+            with open(homeworkPath,'r') as f:
                 data = f.read()
 
                 data = data.strip()
@@ -163,29 +160,6 @@ class RunProgramming(Resource):
             print("kill the LA_process!")
             LA_process.kill()
 
-        ###
-        # print("Programming Error: " + programming_out)
-
-        ###Run the logic analysis(LA)
-        # try:
-        #     LA_process = subprocess.Popen([batPath + "LG_run.bat"])
-        # except Exception:
-        #     print("Error!Can't analyze the wave!")
-        ###
-
-        ### Run the pattern generator(PG)
-        # try:
-        #     PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)
-        #     PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-        #     print(str(PG_out[0]).split('\\r\\n'))
-        #     # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-        #     if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-        #         raise Exception("Error!Can't generate pattern to board!")
-
-        # except Exception as err:
-        #     print(err)
-        ###
-
         
 
         print("go to the program end!!\n")
@@ -194,7 +168,7 @@ class RunProgramming(Resource):
         else:
             return {'Msg': 'Error occurred!'}
 
-api.add_resource(RunProgramming, '/api/RunProgramming')
+api.add_resource(HomeworkJudge, '/api/HomeworkJudge')
 
 if __name__ == '__main__':
     app.run(debug=True)     #如果寫完要記得把debug模式刪掉

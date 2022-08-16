@@ -8,6 +8,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Timers;
 using System.Threading;
+using System.IO;
+using System.Text;
 
 namespace C_Sharp
 {
@@ -18,6 +20,7 @@ namespace C_Sharp
         UInt32[] m_lpiWave;
         string csModelName;
         string csErrorString;
+        string homeworkPath;
         bool getWaveData = false;
         bool gfTrMode;
         LARunClass.LA_HW_MODE m_giHwMode;
@@ -152,7 +155,7 @@ namespace C_Sharp
                 }
                 // Get the buffer size(in bytes) for 2000 samples
                 m_iCurSize = m_LARun.ulaSDKGetBufferSizeInBytes();
-                Debug.WriteLine(m_iCurSize);
+                Debug.WriteLine("Wave array size: " + m_iCurSize);
                 m_lpiWave = new UInt32[m_iCurSize];
             }
 
@@ -268,7 +271,30 @@ namespace C_Sharp
             Console.WriteLine("test timer");
         }*/
 
-        private void run_Main(String StudentID)
+        private void writeWaveTxt()
+        {
+            Int64 x;
+            try
+            {
+                //Open the File
+                StreamWriter sw = new StreamWriter(homeworkPath, false, Encoding.UTF8);
+
+                //Write wave data
+                for (x = 0; x < m_iCurSize; x++)
+                {
+                    sw.Write(m_lpiWave[x] + " ");
+                }
+
+                //close the file
+                sw.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+        }
+
+        private void run_Main(string StudentID,string HWPath)
         {
             m_LARun = new LARunClass();
             m_giHwMode = LARunClass.LA_HW_MODE.HW_200M_36CH;
@@ -276,6 +302,7 @@ namespace C_Sharp
             byte[] szBuf = System.Text.Encoding.ASCII.GetBytes("12345" + "\0");
             int iSize = szBuf.Count();
             int c = 0;
+            homeworkPath = HWPath;
 
             GetHW();
             Thread.Sleep(5000);
@@ -288,7 +315,7 @@ namespace C_Sharp
             ;*/
             //if(getWaveData != true)  //如果波型太少，記憶體沒滿，就直接存下來。
             LAStop();
-            saveAsLaw(StudentID);
+            writeWaveTxt();
            // MainTimerClock = new System.Threading.Timer(new TimerCallback(testTimerProc), null, 0, 1000);
             //Thread.Sleep(5000);
         }
