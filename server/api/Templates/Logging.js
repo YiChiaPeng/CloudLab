@@ -17,7 +17,11 @@ function submitFormData(){
     dataType: "jason",
     success: function (response) {
         if(response.success == "t" ){
-            
+            document.cookie = response.jwt_token;
+            alert(response.message);
+        }
+        else{
+            alert(response.message);
         }
     }
    });
