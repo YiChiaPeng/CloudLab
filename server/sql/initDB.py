@@ -11,12 +11,6 @@ try:
 
     connection.select_db("remote_lab")
 
-    cursor.execute("DROP TABLE IF EXISTS courses;")
-    connection.commit()
-
-    cursor.execute("DROP TABLE IF EXISTS orderQueue;")
-    connection.commit()
-
     cursor.execute("DROP TABLE IF EXISTS user;")
     connection.commit()
 
@@ -24,26 +18,10 @@ try:
         "CREATE TABLE IF NOT EXISTS user( \
             userID varchar(50) NOT NULL, \
             userName  varchar(30) NOT NULL, \
+            authorization  varchar(10) NOT NULL, \
             password varchar(70) NOT NULL, \
-            email varchar(50) NOT NULL, \
+            course varchar(800) NOT NULL, \
             PRIMARY KEY (userID) \
-        );")
-    connection.commit()
-
-    cursor.execute(
-        "CREATE TABLE IF NOT EXISTS orderQueue( \
-            workOrder int(10) NOT NULL AUTO_INCREMENT, \
-            workType varchar(3) NOT NULL, \
-            workText  varchar(25) NOT NULL, \
-            PRIMARY KEY (workOrder) \
-        );")
-    connection.commit()
-
-    cursor.execute(
-        "CREATE TABLE IF NOT EXISTS courses( \
-            courseID int(10) NOT NULL, \
-            courseName varchar(300), \
-            PRIMARY KEY (courseID) \
         );")
     connection.commit()
 

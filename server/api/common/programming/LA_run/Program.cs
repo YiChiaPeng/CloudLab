@@ -250,7 +250,7 @@ namespace C_Sharp
         private void saveAsLaw(String StudentID)
         {
             Console.WriteLine("Save the law file!");
-            if (!m_LARun.ulaSDKSaveAsLawFile("C:\\git-repos\\ours\\CloudLab\\server\\file\\" + StudentID + ".law"))
+            if (!m_LARun.ulaSDKSaveAsLawFile("C:\\git-repos\\ours\\CloudLab\\server\\file\\" + StudentID + "\\" + StudentID + ".law"))
                 ShowErrorCode();
         }
 

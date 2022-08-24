@@ -21,6 +21,9 @@ namespace C_Sharp
         string csModelName;
         string csErrorString;
         string homeworkPath;
+        string PGVName;
+        string HWName;
+        string homeworkPathLaw;
         bool getWaveData = false;
         bool gfTrMode;
         LARunClass.LA_HW_MODE m_giHwMode;
@@ -246,10 +249,10 @@ namespace C_Sharp
             //    return;
             //}
         }
-        private void saveAsLaw(String StudentID)
+        private void saveAsLaw()
         {
             Console.WriteLine("Save the law file!");
-            if (!m_LARun.ulaSDKSaveAsLawFile("C:\\git-repos\\ours\\CloudLab\\server\\file\\" + StudentID + ".law"))
+            if (!m_LARun.ulaSDKSaveAsLawFile(homeworkPathLaw + ".law"))
                 ShowErrorCode();
         }
 
@@ -282,7 +285,7 @@ namespace C_Sharp
                 //Write wave data
                 for (x = 0; x < m_iCurSize; x++)
                 {
-                    sw.Write(m_lpiWave[x] + " ");
+                    sw.WriteLine(m_lpiWave[x]);
                 }
 
                 //close the file
@@ -294,7 +297,7 @@ namespace C_Sharp
             }
         }
 
-        private void run_Main(string StudentID,string HWPath)
+        private void run_Main(string hwName,string pgvName,string index)
         {
             m_LARun = new LARunClass();
             m_giHwMode = LARunClass.LA_HW_MODE.HW_200M_36CH;
@@ -302,7 +305,11 @@ namespace C_Sharp
             byte[] szBuf = System.Text.Encoding.ASCII.GetBytes("12345" + "\0");
             int iSize = szBuf.Count();
             int c = 0;
-            homeworkPath = HWPath;
+            //homeworkPath = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + hwName;
+            PGVName = pgvName;
+            HWName = hwName;
+            homeworkPath = hwName + "\\" + pgvName + ".txt";
+            homeworkPathLaw = hwName + "\\" + pgvName;
 
             GetHW();
             Thread.Sleep(5000);
@@ -315,6 +322,7 @@ namespace C_Sharp
             ;*/
             //if(getWaveData != true)  //如果波型太少，記憶體沒滿，就直接存下來。
             LAStop();
+            saveAsLaw();
             writeWaveTxt();
            // MainTimerClock = new System.Threading.Timer(new TimerCallback(testTimerProc), null, 0, 1000);
             //Thread.Sleep(5000);
@@ -324,8 +332,10 @@ namespace C_Sharp
         {
             Program run = new Program();
 
-            run.run_Main(args[0]);
+            run.run_Main(args[0],args[1],args[2]);
             Console.WriteLine("This is the Program END!!!");
+            //Console.WriteLine(args[0]);
+            //Console.ReadLine();
         }
     }
 }

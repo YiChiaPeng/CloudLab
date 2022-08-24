@@ -6,7 +6,6 @@ import subprocess
 import time
 import os
 import shutil
-from ..common import JWT_handler
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {'sof', 'pgv'}
@@ -20,8 +19,11 @@ class HomeworkJudge(Resource):
     Inputs:
         className:哪個課程
         homeworkName:課程的哪個作業           我的想法:/files/課程名稱/課程作業
-        userName:學生的帳號
+        userID:學生的帳號
         sofFile:sof檔案    <input type=file name=sofFile>
+        pgvFile:pgv檔案
+        pgvFile2:pgv檔案
+        pgvFile3:pgv檔案
     Outputs:
         json:{"score": ?
               "openResult" : "true or false"}
@@ -31,12 +33,12 @@ class HomeworkJudge(Resource):
         return {'Msg': 'This is GET method!'}
     def post(self):
         #設定資料夾路徑
+        
         LAFlag = 0
         succFlag = 0
         className = request.form["className"]
         homeworkName = request.form["homeworkName"]
-        userName = request.form["userName"]
-        UPLOAD_FOLDER = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName + "\\" + userName
+        UPLOAD_FOLDER = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         # JWT = JWT_handler()
         # JWT.readToken()
@@ -55,15 +57,20 @@ class HomeworkJudge(Resource):
 
         # pgvDataPath = request.get_json()
         try:
+            print("debug1")
             #檢查資料夾存不存在，if not then create the folder
             if not os.path.isdir(UPLOAD_FOLDER):
-                os.mkdir(UPLOAD_FOLDER)
+                os.makedirs(UPLOAD_FOLDER)
             else:
                 shutil.rmtree(UPLOAD_FOLDER)
-                os.mkdir(UPLOAD_FOLDER)
-
+                os.makedirs(UPLOAD_FOLDER)
+            print("debug2")
             #上傳sof,pgv檔到files
             sofName = upload_file("sofFile")
+            pgvName1 = upload_file("pgvFile")
+            pgvName2 = upload_file("pgvFile2")
+            pgvName3 = upload_file("pgvFile3")
+            print("debug3")
 
             # print(pgvDataPath['codePath'])
             batPath = "C:\\git-repos\\ours\\CloudLab\\server\\api\\common\\"
@@ -72,53 +79,11 @@ class HomeworkJudge(Resource):
 
             homeworkPath = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName
 
-            ###write PG_run bat file
-            with open(homeworkPath,'r') as f:
-                data = f.read()
-
-                data = data.strip()
-                # print(data)
-                tmp = data.splitlines()
-
-                timeUnit = tmp[3]
-                timeUnit = timeUnit.strip()[5] #取得時間單位
-                # print(tmp)
-
-                #取得輸出波型需要幾秒
-                if(len(tmp[-1]) == 1):
-                    wtime = tmp[-2]
-                else:
-                    wtime = tmp[-1]
-                wtime = wtime[:wtime.rfind('>')].strip()
-
-                #算出需要多少ms輸出波型
-                if timeUnit == 'N' or timeUnit == 'n':
-                    waveTime = float(wtime) * pow(10,-6)
-                if timeUnit == 'U' or timeUnit == 'u':
-                    waveTime = float(wtime) * pow(10,-3)
-                if timeUnit == 'M' or timeUnit == 'm':
-                    waveTime = float(wtime)
-
-                print("Time is {}ms".format(str(waveTime)))
-
-
-            with open(batPath + "PG_run.bat",'w') as fileWrite:
-                fileWrite.write("cd " + UPLOAD_FOLDER)
-                fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\PG_run\\bin\\x86\\Debug\\PG_1.exe {} {}".format(pgvName,str(waveTime)))
-            ###
-            
             ### write Quartus programming bat file
             with open(batPath + "Programming_run.bat",'w') as fileWrite:
                 fileWrite.write("cd " + UPLOAD_FOLDER)
                 fileWrite.write("\nC:\\altera\\13.0\\quartus\\bin64\\quartus_pgm.exe -m JTAG -o p;{}".format(sofName))
             ###
-
-            ### write LA bat file
-            with open(batPath + "LA_run.bat",'w') as fileWrite:
-                fileWrite.write("cd " + UPLOAD_FOLDER)
-                fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run\\bin\\Debug\\C_Sharp.exe {}".format(Username))
-            ###
-
             ### programming the DE0 board
             print("programming process\n")
             programming_process = subprocess.Popen([batPath + "Programming_run.bat"],stdout = PIPE) # run Programming_run.bat
@@ -133,26 +98,75 @@ class HomeworkJudge(Resource):
             # print(type(programming_out[1]))
             ###
 
-            ###Run the logic analysis(LA)
-            print("LA process\n")
-            LAFlag = 1
-            LA_process = subprocess.Popen([batPath + "LA_run.bat"])
-            time.sleep(30)
-            ###
+            for i in range(3):
+                if(i == 0):
+                    pgvName = pgvName1
+                elif(i == 1):
+                    pgvName = pgvName2
+                elif(i == 2):
+                    pgvName = pgvName3
+            ###write PG_run bat file
+                with open(UPLOAD_FOLDER + "\\" + pgvName,'r') as f:
+                    data = f.read()
 
-            ### Run the pattern generator(PG)
-            print("PG process")
-            PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
-            PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-            print(str(PG_out[0]).split('\\r\\n'))
-            # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-            if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-                raise Exception("Error1!Can't generate pattern to board!")
-            ###
+                    data = data.strip()
+                    # print(data)
+                    tmp = data.splitlines()
 
-            time.sleep(20) #sleep for LA
+                    timeUnit = tmp[3]
+                    timeUnit = timeUnit.strip()[5] #取得時間單位
+                    # print(tmp)
+
+                    #取得輸出波型需要幾秒
+                    if(len(tmp[-1]) == 1):
+                        wtime = tmp[-2]
+                    else:
+                        wtime = tmp[-1]
+                    wtime = wtime[:wtime.rfind('>')].strip()
+
+                    #算出需要多少ms輸出波型
+                    if timeUnit == 'N' or timeUnit == 'n':
+                        waveTime = float(wtime) * pow(10,-6)
+                    if timeUnit == 'U' or timeUnit == 'u':
+                        waveTime = float(wtime) * pow(10,-3)
+                    if timeUnit == 'M' or timeUnit == 'm':
+                        waveTime = float(wtime)
+
+                    print("Time is {}ms".format(str(waveTime)))
+
+
+                with open(batPath + "PG_run.bat",'w') as fileWrite:
+                    fileWrite.write("cd " + UPLOAD_FOLDER)
+                    fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\PG_run\\bin\\x86\\Debug\\PG_1.exe {} {}".format(pgvName,str(waveTime)))
+                ###
+
+                ### write LA bat file
+                with open(batPath + "LA_run.bat",'w') as fileWrite:
+                    fileWrite.write("cd " + UPLOAD_FOLDER)
+                    fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run_0\\bin\\Debug\\C_Sharp.exe {} {} {}".format(homeworkPath,pgvName[:-4],i))
+                ###
+
+                ###Run the logic analysis(LA)
+                print("LA process\n")
+                LAFlag = 1
+                LA_process = subprocess.Popen([batPath + "LA_run.bat"])
+                time.sleep(20)
+                ###
+
+                ### Run the pattern generator(PG)
+                print("PG process")
+                PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
+                PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
+                print(str(PG_out[0]).split('\\r\\n'))
+                # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
+                if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
+                    raise Exception("Error1!Can't generate pattern to board!")
+                ###
+
+                time.sleep(30) #sleep for LA
             succFlag = 1
         except Exception as err:
+            succFlag = 0
             # state = int(str(err)[5])
             print(str(err))
 
