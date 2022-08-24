@@ -11,26 +11,21 @@ from resource.index import test
 from resource.User import User
 from resource.Users import Users
 from resource.login_handler import login_handler
+from resource.course import course
 
 app = Flask(__name__)
 jwt=JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'test' 
-
-'''
-加一個驗證
-'''
-
-
+app.config['JWT_TOKEN_LOCATION']=['headers','cookies']
+app.config['JWT_ACCESS_COOKIE_NAME']="access_token_cookie"
 '''
 Api要提供的resource放在resource
 '''
-
-
 api = Api(app)
-api.add_resource(test, "/")
-api.add_resource(User, "/User/<string:id>")
-api.add_resource(Users, "/Users")
+api.add_resource(User, "/api/User")
+api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
+api.add_resource(course,"/api/course")
 
 if __name__ == "__main__":
     app.run(port=8087,debug=True)

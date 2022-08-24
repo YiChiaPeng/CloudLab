@@ -1,10 +1,10 @@
 from base64 import encode
 from hashlib import algorithms_available
-import jwt
-import json
+from flask_jwt_extended import create_access_token,get_jwt_identity
+
 
 class JWT_handler():
     def makeToken(self,data):
-        return jwt.encode(data,"test",algorithm="HS256")
-    def readToken(self,token):
-        return jwt.decode(token)
+        return create_access_token(data)
+    def readToken(self):
+        return get_jwt_identity()
