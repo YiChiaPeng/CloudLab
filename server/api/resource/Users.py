@@ -3,8 +3,6 @@
 及提供的function
 我假設他匯入學號檔案csv寫在這
 '''
-import json
-from pickle import TRUE
 from flask import jsonify
 from flask_restful import Resource
 from common.DBhandler import DBhandler
