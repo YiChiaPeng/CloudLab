@@ -11,7 +11,9 @@ from resource.index import test
 from resource.User import User
 from resource.Users import Users
 from resource.login_handler import login_handler
+from resource.ProgrammingRequest import ProgrammingRequest
 from resource.course import course
+
 
 app = Flask(__name__)
 jwt=JWTManager(app)
@@ -25,7 +27,7 @@ api = Api(app)
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
+api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
 api.add_resource(course,"/api/course")
-
 if __name__ == "__main__":
     app.run(port=8087,debug=True)
