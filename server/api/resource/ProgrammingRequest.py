@@ -14,6 +14,8 @@ import threading
 # 處理import DBhandler
 sys.path.insert(1, 'C:\\git-repos\\ours\\CloudLab\\server')
 
+from api.common.JWT_handler import JWT_handler
+from flask_jwt_extended import jwt_required
 from api.common.DBhandler import DBhandler
 from werkzeug.utils import secure_filename
 from email.mime.multipart import MIMEMultipart
@@ -44,9 +46,15 @@ class ProgrammingRequest(Resource):
     def get(self):
         return {'Msg': 'This is GET method!'}
 
+    @jwt_required()
     def post(self):
+        jwt = JWT_handler()
+        user = jwt.readToken()
+        # print("Enter post!\nuser:")
+        # print(user)
         app = Flask(__name__)
-        userID = request.form.get('userID','')
+        userID = user['userID']
+        print("userID: " + userID)
         #做什麼燒錄動作    例: 0:單純燒錄    1:助教作業上傳    2:學生繳交作業
         try:
             workType = int(request.form.get('workType',-1))
@@ -81,6 +89,9 @@ class ProgrammingRequest(Resource):
         pgvName3 = ""
         i = 0
         mailText = ""
+        judgeFlag = 0
+        judgeFlag2 = 0
+        judgeFlag3 = 0
 
 
         #做檔案的副檔名檢查
@@ -163,9 +174,11 @@ class ProgrammingRequest(Resource):
                             fp3.write("diff at " + str(x) + " :" + line + " "+  line2 + "\n")
                 #比對完之後，看跟解答誤差多少，之後拿來判斷是否錯誤
                 differences.append(diff)
+                return True
             except Exception as err:
                 print("Homework judge error:")
                 print(err)
+                return False
 
 
         # 設定上傳檔案的路徑
@@ -363,7 +376,7 @@ class ProgrammingRequest(Resource):
                         print("PG process")
                         PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
                         PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        print(str(PG_out[0]).split('\\r\\n'))
+                        # print(str(PG_out[0]).split('\\r\\n'))
                         # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
                         if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
                             raise Exception("Error1!Can't generate pattern to board!")
@@ -481,7 +494,7 @@ class ProgrammingRequest(Resource):
                         print("PG process")
                         PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
                         PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        print(str(PG_out[0]).split('\\r\\n'))
+                        # print(str(PG_out[0]).split('\\r\\n'))
                         # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
                         if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
                             raise Exception("Error1!Can't generate pattern to board!")
@@ -518,7 +531,7 @@ class ProgrammingRequest(Resource):
                         print("PG process")
                         PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
                         PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        print(str(PG_out[0]).split('\\r\\n'))
+                        # print(str(PG_out[0]).split('\\r\\n'))
                         # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
                         if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
                             raise Exception("Error1!Can't generate pattern to board!")
@@ -562,9 +575,9 @@ class ProgrammingRequest(Resource):
 
                 ###比對txt檔案來看對不對
                 if(succFlag and workType == 2):
-                    judgeHomework(file1)
-                    judgeHomework(file2,1)
-                    judgeHomework(file3,2)
+                    judgeFlag = judgeHomework(file1)
+                    judgeFlag2 = judgeHomework(file2,1)
+                    judgeFlag3 = judgeHomework(file3,2)
                     
                     db = DBhandler('localhost','root','','remote_lab')
 
@@ -580,8 +593,8 @@ class ProgrammingRequest(Resource):
                         #先檢查這一欄創好了沒
                     sqlStatement = "SHOW COLUMNS FROM `" + tableName[0:-3]  + "` LIKE '" + homeworkName  + "';"
                     result = db.query(sqlStatement,True)
-                    print("column result:")
-                    print(len(result))
+                    # print("column result:")
+                    # print(len(result))
                         #如果沒創，就創這欄位
                     if(len(result) == 0):
                         sqlStatement = "ALTER TABLE `" + tableName[0:-3] + "` ADD " + homeworkName + " JSON;"
@@ -632,8 +645,8 @@ class ProgrammingRequest(Resource):
                     LA_process.kill()
                     # sem.release()
             sem.release()
-            print("out of sem!")
-            print("The floder: " + UPLOAD_FOLDER)
+            # print("out of sem!")
+            # print("The floder: " + UPLOAD_FOLDER)
 
         # if(LAFlag and LA_process.poll() is None):
         #     print("kill the LA_process!")
@@ -641,7 +654,7 @@ class ProgrammingRequest(Resource):
         
         # time.sleep(15)
         # sem.release()
-        # print("out of sem!")
+        print("out of sem!")
         # print("The floder: " + UPLOAD_FOLDER)
 
         
@@ -656,14 +669,17 @@ class ProgrammingRequest(Resource):
             elif(workType == 1):
                 content.attach(MIMEText("您的作業創建成功!!"))  #郵件內容
             elif(workType == 2):
-                content.attach(MIMEText("您的作業上傳成功!!"))  #郵件內容
+                if(judgeFlag and judgeFlag2 and judgeFlag3):
+                    content.attach(MIMEText("您的作業上傳成功!!"))  #郵件內容
+                else:
+                    content.attach(MIMEText("您的作業上傳失敗!!\n請再重新上傳一次"))  #郵件內容
         else:
             if(workType == 0):
                 content.attach(MIMEText("您的程式燒錄失敗!!\n請再重新上傳一次"))  #郵件內容
             elif(workType == 1):
-                content.attach(MIMEText("您的作業創建成功!!\n請再重新上傳一次"))  #郵件內容
+                content.attach(MIMEText("您的作業創建失敗!!\n請再重新上傳一次"))  #郵件內容
             elif(workType == 2):
-                content.attach(MIMEText("您的作業上傳成功!!\n請再重新上傳一次"))  #郵件內容
+                content.attach(MIMEText("您的作業上傳失敗!!\n請再重新上傳一次"))  #郵件內容
         # ckystilkvgqxnodh
 
         with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
@@ -681,13 +697,16 @@ class ProgrammingRequest(Resource):
         # print("\ngo to the program end!!\n")
         if(succFlag):
             if(workType == 0):
-                return {'Message': 'Program the board successful!' + emailMsg},201
+                return {"success": "True",'Message': 'Program the board successful!' + emailMsg},201
             elif(workType == 1):
-                return {'Message': 'Create the homework successful!' + emailMsg},201
+                return {"success": "True",'Message': 'Create the homework successful!' + emailMsg},201
             elif(workType == 2):
-                return {'Message': 'Homework judge successful!' + emailMsg},200
+                if(judgeFlag and judgeFlag2 and judgeFlag3):
+                    return {"success": "True",'Message': 'Homework judge successful!' + emailMsg},200
+                else:
+                    return {"success": "False",'Message': 'Homework judge Failed!' + emailMsg},200
         else:
-            return {'Message': returnMsg},400
+            return {"success": "False",'Message': returnMsg},400
 
 
 # api.add_resource(ProgrammingRequest, '/api/ProgrammingRequest')
