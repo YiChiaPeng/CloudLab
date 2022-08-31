@@ -44,7 +44,7 @@ class User(Resource):
         parser.add_argument('uId', required=True)
         parser.add_argument('uName', required=True)
         arg=parser.parse_args()
-        sql="INSERT INTO `user`(`userID`,`password`,`userName`,`email`) VALUES (\"{}\",\"{}\",\"{}\",\"{}\")".format(arg['uId'],"a"+arg['uId'],arg['uName'],arg['uId']+"@mail.ntou.edu.tw")
+        sql="INSERT INTO `user`(`userID`,`password`,`userName`,`course`,`authorization`) VALUES (\"{}\",\"{}\",\"{}\",\'{}\',\"{}\")".format(arg['uId'],"a"+arg['uId'],arg['uName'],'["course1"]',"1")
         self.db_handler.query(sql,False)
 
         
