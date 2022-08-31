@@ -20,7 +20,7 @@ try:
             userName  varchar(30) NOT NULL, \
             authorization  varchar(10) NOT NULL, \
             password varchar(70) NOT NULL, \
-            course varchar(800) NOT NULL, \
+            course JSON NOT NULL, \
             PRIMARY KEY (userID) \
         );")
     connection.commit()
