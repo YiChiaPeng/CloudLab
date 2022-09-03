@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from common.DBhandler import DBhandler
-from flask_restful import reqparse
+from flask import request
 from common.JWT_handler import JWT_handler
 
 class login_handler(Resource):
@@ -9,15 +9,13 @@ class login_handler(Resource):
         self.db=DBhandler()
 
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('uId')
-        parser.add_argument('uPassword')
-        arg=parser.parse_args()
-        self.sql="SELECT * FROM user where `userID` = \""+arg['uId']+"\""
+        uId=request.form.get("uId")
+        uPassword=request.form.get("uPassword")
+        self.sql="SELECT * FROM user where `userID` = \""+uId+"\""
         result=self.db.query(self.sql,True)
         if(len(result)==1):
             #暫時先不加密處理，之後再改
-            if(arg['uPassword']==result[0]['password']):
+            if(uPassword==result[0]['password']):
                 jwt=JWT_handler()
                 return {
                     "jwt_token":jwt.makeToken(result[0]),
