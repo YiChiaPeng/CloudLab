@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'bootstrap.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'font-awesome.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/nivo-lightbox.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/default.css')}}"/>
+        <title>作業瀏覽</title>
+        <meta name="description" content=""/>
+        <meta name="author" content=""/>
+    </head>
+    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+        <div id="root">
+            <div>
+                <nav id="menu" class="navbar navbar-default navbar-fixed-top">
+                    <div class="navbar-header">
+                        <a class="navbar-brand page-scroll" href="#page-top"><img src="{{ url_for('static', filename = 'logo.png')}}"></a>
+                    </div>
+                    <div class="container">
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <a href="http://127.0.0.1:8087/score" class="page-scroll">作業評量</a>
+                                </li>
+                                <li class="">
+                                    <a href="http://127.0.0.1:8087/choose" class="page-scroll">課程選擇</a>
+                                </li>
+                                <li class="">
+                                    <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
+                                </li>
+                                <li class="">
+                                    <a href="http://127.0.0.1:8087/homeworkcontent" class="page-scroll">作業內容</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </body>
+</html>

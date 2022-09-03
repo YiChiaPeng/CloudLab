@@ -34,6 +34,21 @@ def unauthorized_callback(callback):
 
 
 api = Api(app)
+@app.route("/")
+def index():
+    return render_template("index.html")
+@app.route("/score")
+def score():
+    return render_template("score.html")
+@app.route("/choose")
+def choose():
+    return render_template("choose.html")
+@app.route("/homeworkbrowse")
+def homeworkbrowse():
+    return render_template("homeworkbrowse.html")
+@app.route("/homeworkcontent")
+def homeworkcontent():
+    return render_template("homeworkcontent.html")
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
