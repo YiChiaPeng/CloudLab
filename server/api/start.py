@@ -14,6 +14,8 @@ from resource.login_handler import login_handler
 from resource.ProgrammingRequest import ProgrammingRequest
 from resource.course import course
 from resource.homework import homework
+from resource.homeworks import homeworks
+from resource.ProgrammingTest_without_hardware import ProgrammingTest_without_hardware
 
 
 app = Flask(__name__)
@@ -34,6 +36,11 @@ def unauthorized_callback(callback):
 
 
 api = Api(app)
+
+@app.route("/test")
+def testUP():
+    return render_template("test.html")
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -49,11 +56,15 @@ def homeworkbrowse():
 @app.route("/homeworkcontent")
 def homeworkcontent():
     return render_template("homeworkcontent.html")
+    
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
-api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
+##api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
 api.add_resource(course,"/api/course")
 api.add_resource(homework,"/api/homework")
+api.add_resource(homeworks,"/api/homeworks")
+api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest")
+
 if __name__ == "__main__":
     app.run(port=8087,debug=True)

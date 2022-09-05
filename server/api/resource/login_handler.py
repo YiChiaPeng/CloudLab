@@ -18,7 +18,7 @@ class login_handler(Resource):
             if(uPassword==result[0]['password']):
                 jwt=JWT_handler()
                 return {
-                    "jwt_token":jwt.makeToken(result[0]),
+                    "jwt_token":jwt.makeToken(data={"userID":result[0]["userID"]}),
                     "success":"t",
                     "message":"login success"
                 }

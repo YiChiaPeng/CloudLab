@@ -55,9 +55,3 @@ class User(Resource):
     def put(self):
         pass
 
-    def delete(self):
-        global users
-        users = [item for item in users if item['name'] != name]
-        return {
-            'message': 'Delete done!'
-        }
