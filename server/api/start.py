@@ -3,11 +3,11 @@
 from flask import Flask,jsonify, render_template,make_response
 from flask_restful import Api
 from common.JWT_handler import JWT_handler
+from common.DBhandler import DBhandler
 from flask_jwt_extended import  JWTManager,jwt_required
 '''--------------------------------------
     import api所提供的resouce file
 ---------------------------------------'''
-from resource.index import test
 from resource.User import User
 from resource.Users import Users
 from resource.login_handler import login_handler
@@ -50,10 +50,20 @@ def index():
 def remote():
     return render_template("remote.html")
 
-@app.route("/enterclass")
+@app.route("/course")
 @jwt_required()
 def enterclass():
-    return render_template("enterclass.html")
+    jwt=JWT_handler()
+    db=DBhandler()
+    userID=jwt.readToken()["userID"]
+    sql="SELECT authorization,course FROM `user` WHERE `userID`="+userID+"`"
+    user_result=db.query(sql,True)
+    if(len(user_result)==0):
+        return {
+            "message":"you can't do this"
+        }
+    courses=user_result[0]["course"].split("/")
+    return render_template("enterclass.html",authorzation=user_result[0]["authorization"],courses=courses)
 
 @app.route("/homeworkbrowse")
 @jwt_required()
@@ -64,11 +74,7 @@ def homeworkbrowse():
 @jwt_required()
 def homeworkcontent():
     return render_template("homeworkcontent.html")
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> d55f7c497bf902b1e59328e190a63c624c67b77f
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")

@@ -11,14 +11,6 @@ class course(Resource):
         self.db=DBhandler()
         self.jwt=JWT_handler()
 
-
-    @jwt_required()
-    def get(self):
-        user=self.jwt.readToken()
-        self.sql="SELECT course FROM user where `userID` = \""+user["userID"]+"\""
-        result=self.db.query(self.sql,True)
-        return result[0]["course"].split("/")
-
     @jwt_required()
     def post(self):
         user=self.jwt.readToken()
