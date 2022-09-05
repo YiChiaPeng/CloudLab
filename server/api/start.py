@@ -56,7 +56,7 @@ def enterclass():
     jwt=JWT_handler()
     db=DBhandler()
     userID=jwt.readToken()["userID"]
-    sql="SELECT authorization,course FROM `user` WHERE `userID`="+userID+"`"
+    sql="SELECT authorization,course FROM `user` WHERE `userID`=\""+userID+"\""
     user_result=db.query(sql,True)
     if(len(user_result)==0):
         return {

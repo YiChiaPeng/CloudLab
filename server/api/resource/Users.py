@@ -9,7 +9,7 @@ from flask import jsonify
 from flask_restful import Resource,request
 from common.DBhandler import DBhandler
 from flask_jwt_extended import  jwt_required
-from server.api.common.JWT_handler import JWT_handler
+from common.JWT_handler import JWT_handler
 '''
 我參考的命名規則
 ==========  =====================  ==================================
