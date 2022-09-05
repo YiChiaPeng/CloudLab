@@ -1,6 +1,8 @@
 <!doctype html>
         <title>Upload new File</title>
         <h1>Upload new File{{text}}</h1>
-        <form action="/api/remote" method=post enctype=multipart/form-data>
-        <p><input type=file name=file>
+        <form action="/api/Users" method=post enctype=multipart/form-data>
+        <p><input type=file name="file">
+        <input type="text" name="courseName">
          <input type=submit value=Upload>
+        </form>

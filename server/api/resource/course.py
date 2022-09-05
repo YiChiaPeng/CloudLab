@@ -15,14 +15,16 @@ class course(Resource):
     @jwt_required()
     def get(self):
         user=self.jwt.readToken()
-        courses=user["course"].split("/")
-        return courses
-        
+        self.sql="SELECT course FROM user where `userID` = \""+user["userID"]+"\""
+        result=self.db.query(self.sql,True)
+        return result[0]["course"].split("/")
 
     @jwt_required()
     def post(self):
         user=self.jwt.readToken()
-        if user["authorization"]=="1":
+        self.sql="SELECT authorization FROM user where `userID` = \""+user['userID']+"\""
+        user=self.db.query(self.sql,True)
+        if user[0]["authorization"]=="1":
             parser = reqparse.RequestParser()
             parser.add_argument('courseName')
             arg=parser.parse_args()

@@ -1,10 +1,11 @@
+from enum import unique
 from flask_restful import Resource
 from common.DBhandler import DBhandler
 from flask_restful import reqparse
 from common.JWT_handler import JWT_handler
 from flask_jwt_extended import jwt_required
 
-class homework(Resource):
+class homeworks(Resource):
     def __init__(self) -> None:
         super().__init__()
         self.db=DBhandler()
@@ -17,20 +18,14 @@ class homework(Resource):
         userID=user['userID']
         parser = reqparse.RequestParser()
         parser.add_argument('courseName')
-        parser.add_argument('homeworkName')
         arg=parser.parse_args()
         self.sql="SELECT course FROM user where `userID` = \""+userID+"\"" 
         result=self.db.query(self.sql,True)
         result=result.split("/")
         if(arg["courseName"] in result):
-            self.sql="SELECT homeworkInfo FROM "+arg["courseName"]+"_HW where homeworkName="+arg["homeworkName"] 
-            info=self.db.query(self.sql,True)
-            self.sql="SELECT "+arg["homeworkName+"]+" FROM "+arg["courseName"]
-            score=self.db.query(self.sql,True)
-            return{
-                "info":info[0]["homeworkInfo"],
-                "score":score[0][arg["homeworkName"]]
-            }
+            self.sql="SELECT homeworkName FROM "+arg["courseName"]+"_HW " 
+            result=self.db.query(self.sql,True)
+            return result
         else:
             return{
                 "message":"you dont have authorization"
