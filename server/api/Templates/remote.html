@@ -8,9 +8,26 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/nivo-lightbox.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/default.css')}}"/>
-        <title>作業評量</title>
+        <title>遠端燒錄</title>
+        <script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        <script language="JavaScript" type="text/javascript" src="https://github.com/jquery/jquery-migrate"></script>
         <meta name="description" content=""/>
         <meta name="author" content=""/>
+        <script src="{{ url_for('static', filename = 'config.js')}}"></script>
+        <style>
+        .center {
+            margin: 0; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            color: black;
+        }
+        .uploadimg {
+            width: 320px;
+            height: 180px;
+        }
+        </style>
     </head>
     <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
         <div id="root">
@@ -23,10 +40,10 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/score" class="page-scroll">作業評量</a>
+                                    <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/choose" class="page-scroll">課程選擇</a>
+                                    <a href="http://127.0.0.1:8087/enterclass" class="page-scroll">進入課程</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
@@ -38,7 +55,20 @@
                         </div>
                     </div>
                 </nav>
+                <div class="center">
+                    <div id="sofupload">
+                        <input id="soffile" type="file" style="display: none;" accept=".sof" value="上傳"></input>
+                        <label for="soffile"><img class="uploadimg" src="{{ url_for('static', filename = 'upload01.png')}}"></label>
+                    </div>
+                    <div id="pgvupload">
+                        <input id="pgvfile" type="file" style="display: none;" accept=".pgv" value="上傳"></input>
+                        <label for="pgvfile"><img class="uploadimg" src="{{ url_for('static', filename = 'upload03.png')}}"></label>
+                    </div>
+                    <input id="paybutton" type="button" style="display: none;" onclick="do_pay()"></input>
+                    <label for="paybutton"><img class="uploadimg" src="{{ url_for('static', filename = 'upload05.png')}}"></label>
+                </div>      
             </div>
-        </div>
+        </div>   
     </body>
+    <script src="{{ url_for('static', filename = 'remote.js')}}"></script>
 </html>

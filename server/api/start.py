@@ -30,25 +30,34 @@ Api要提供的resource放在resource
 
 @jwt.unauthorized_loader
 def unauthorized_callback(callback):
-    return make_response(render_template("test.html",user="rrr"))
+    return make_response(render_template("index.html",user="rrr"))
 
 
 api = Api(app)
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/score")
-def score():
-    return render_template("score.html")
-@app.route("/choose")
-def choose():
-    return render_template("choose.html")
+
+@app.route("/remote")
+@jwt_required()
+def remote():
+    return render_template("remote.html")
+
+@app.route("/enterclass")
+@jwt_required()
+def enterclass():
+    return render_template("enterclass.html")
+
 @app.route("/homeworkbrowse")
+@jwt_required()
 def homeworkbrowse():
     return render_template("homeworkbrowse.html")
+
 @app.route("/homeworkcontent")
+@jwt_required()
 def homeworkcontent():
     return render_template("homeworkcontent.html")
+
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
