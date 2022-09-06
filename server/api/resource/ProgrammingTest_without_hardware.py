@@ -21,29 +21,13 @@ from werkzeug.utils import secure_filename
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+import random
 import datetime
 
 sem = threading.Semaphore()
 ALLOWED_EXTENSIONS = {'sof', 'pgv'}
 
-class ProgrammingRequest(Resource):
-    '''
-    利用form-data傳資料
-    上傳完PGV和SOF檔之後，之後就會燒程式進去DE0然後回傳law檔案回去
-    Inputs:
-        workType:動作類別  0:單純燒錄    1:助教作業上傳(把檔案(txt和law檔)生出來)    2:學生繳交作業(把檔案生出來，然後做比對，之後再把結果用json物件存進資料表3.4裡)
-        userID:學生帳號
-        pgvFile:pgv檔案    <input type=file name=pgvFile>
-        sofFile:sof檔案    <input type=file name=sofFile>
-        className:課程名稱
-        homeworkName:作業名稱
-    Outputs:
-        law file:燒錄完的波型檔放在正確的位置
-        or
-        txt file:燒錄完的波型用txt檔存起來，之後用來做比對
-
-    還沒寫1.JWT驗證  之後補上
-    '''
+class ProgrammingTest_without_hardware(Resource):
     def get(self):
         return {'Msg': 'This is GET method!'}
 
@@ -187,6 +171,14 @@ class ProgrammingRequest(Resource):
                 print(err)
                 return False
 
+        def randomJudge():
+            x = random.random()
+            
+            if(x >= 0.5):
+                return True
+            else:
+                return False
+        
         def writeStatusIntoSql(type,status):
             db = DBhandler('localhost','root','','remote_lab')
             cName = "NULL"
@@ -227,6 +219,7 @@ class ProgrammingRequest(Resource):
             db.query(sqlStatement,False)
                     # db.query("INSERT INTO `orderQueue` VALUES('','0','" + userID + "')",False)
             del db
+            
 
 
         writeStatusIntoSql(workType,0)
@@ -345,30 +338,14 @@ class ProgrammingRequest(Resource):
             #燒錄程式開始，使用semaphore來管理同步
             sem.acquire()
             print("enter sem!")
+            ### write Quartus programming bat file
+            with open(batPath + "Programming_run.bat",'w') as fileWrite:
+                fileWrite.write("cd " + UPLOAD_FOLDER)
+                fileWrite.write("\nC:\\altera\\13.0\\quartus\\bin64\\quartus_pgm.exe -m JTAG -o p;{}".format(sofName))
+            ###
 
             #因為作業上傳和作業評測都用同一個sof檔，所以只要燒一次就好
             try:
-                # if(workType == 1)   
-                ### write Quartus programming bat file
-                with open(batPath + "Programming_run.bat",'w') as fileWrite:
-                    fileWrite.write("cd " + UPLOAD_FOLDER)
-                    fileWrite.write("\nC:\\altera\\13.0\\quartus\\bin64\\quartus_pgm.exe -m JTAG -o p;{}".format(sofName))
-                ###
-
-                ### programming the DE0 board
-                print("programming process")
-                programming_process = subprocess.Popen([batPath + "Programming_run.bat"],stdout = PIPE) # run Programming_run.bat
-                programming_out = programming_process.communicate()    #取得stdout 來判斷執行結果是否正確
-                print("out of programming process")
-                time.sleep(5)
-                # print(type(programming_out)).
-
-                # print(str(programming_out[0]).split('\\r\\n')[-2].strip())
-                if(str(programming_out[0]).split('\\r\\n')[-2].strip()[:5] == "Error"):   #can't program the DE0 board
-                    raise Exception("Error0!Can't program the board!")
-                # print(type(programming_out[1]))
-                ###
-
                 #依照workType會決定做幾次燒錄動作
                 for j in range(i):
                 # try:
@@ -381,7 +358,6 @@ class ProgrammingRequest(Resource):
                     if(workType == 0):
                         
                         waveTime = getWaveTime(UPLOAD_FOLDER)
-
                         ###write PG_run bat file
                         with open(batPath + "PG_run.bat",'w') as fileWrite:
                             fileWrite.write("cd " + UPLOAD_FOLDER)
@@ -399,116 +375,8 @@ class ProgrammingRequest(Resource):
                             fileWrite.write("cd " + UPLOAD_FOLDER)
                             fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run\\bin\\Debug\\C_Sharp.exe {}".format(userID))
                         ###
-
-                        ### programming the DE0 board
-                        # print("programming process\n")
-                        # programming_process = subprocess.Popen([batPath + "Programming_run.bat"],stdout = PIPE) # run Programming_run.bat
-                        # programming_out = programming_process.communicate()    #取得stdout 來判斷執行結果是否正確
-                        # print("out of programming process")
-                        # time.sleep(5)
-                        # # print(type(programming_out))
-
-                        # # print(str(programming_out[0]).split('\\r\\n')[-2].strip())
-                        # if(str(programming_out[0]).split('\\r\\n')[-2].strip()[:5] == "Error"):   #can't program the DE0 board
-                        #     raise Exception("Error0!Can't program the board!")
-                        # print(type(programming_out[1]))
-                        ###
-
-                        ###Run the logic analysis(LA)
-                        print("LA process")
-                        LAFlag = 1
-                        LA_process = subprocess.Popen([batPath + "LA_run.bat"])
-                        time.sleep(18)
-                        ###
-
-                        ### Run the pattern generator(PG)
-                        print("PG process")
-                        PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
-                        PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        # print(str(PG_out[0]).split('\\r\\n'))
-                        # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-                        if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-                            raise Exception("Error1!Can't generate pattern to board!")
-                        ###
-
-
-
-                        # with open(UPLOAD_FOLDER + "\\" + pgvName,'r') as f:
-                        #     data = f.read()
-
-                        #     data = data.strip()
-                        #     # print(data)
-                        #     tmp = data.splitlines()
-
-                        #     timeUnit = tmp[3]
-                        #     timeUnit = timeUnit.strip()[5] #取得時間單位
-                        #     # print(tmp)
-
-                        #     #取得輸出波型需要幾秒
-                        #     if(len(tmp[-1]) == 1):
-                        #         wtime = tmp[-2]
-                        #     else:
-                        #         wtime = tmp[-1]
-                        #     wtime = wtime[:wtime.rfind('>')].strip()
-
-                        #     #算出需要多少ms輸出波型
-                        #     if timeUnit == 'N' or timeUnit == 'n':
-                        #         waveTime = float(wtime) * pow(10,-6)
-                        #     if timeUnit == 'U' or timeUnit == 'u':
-                        #         waveTime = float(wtime) * pow(10,-3)
-                        #     if timeUnit == 'M' or timeUnit == 'm':
-                        #         waveTime = float(wtime)
-
-                        #     print("Time is {}ms".format(str(waveTime)))
-
-                    # print("here\n")
-                    # with open(batPath + "PG_run.bat",'w') as fileWrite:
-                    #     fileWrite.write("cd " + UPLOAD_FOLDER)
-                    #     fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\PG_run\\bin\\x86\\Debug\\PG_1.exe {} {}".format(pgvName,str(waveTime)))
-                    # ###
-                    
-                    # ### write Quartus programming bat file
-                    # with open(batPath + "Programming_run.bat",'w') as fileWrite:
-                    #     fileWrite.write("cd " + UPLOAD_FOLDER)
-                    #     fileWrite.write("\nC:\\altera\\13.0\\quartus\\bin64\\quartus_pgm.exe -m JTAG -o p;{}".format(sofName))
-                    # ###
-
-                    # ### write LA bat file
-                    # with open(batPath + "LA_run.bat",'w') as fileWrite:
-                    #     fileWrite.write("cd " + UPLOAD_FOLDER)
-                    #     fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run\\bin\\Debug\\C_Sharp.exe {}".format(userID))
-                    # ###
-
-                    ### programming the DE0 board
-                    # print("programming process\n")
-                    # programming_process = subprocess.Popen([batPath + "Programming_run.bat"],stdout = PIPE) # run Programming_run.bat
-                    # programming_out = programming_process.communicate()    #取得stdout 來判斷執行結果是否正確
-                    # print("out of programming process")
-                    # time.sleep(5)
-                    # # print(type(programming_out))
-
-                    # # print(str(programming_out[0]).split('\\r\\n')[-2].strip())
-                    # if(str(programming_out[0]).split('\\r\\n')[-2].strip()[:5] == "Error"):   #can't program the DE0 board
-                    #     raise Exception("Error0!Can't program the board!")
-                    # # print(type(programming_out[1]))
-                    ###
-
-                    ###Run the logic analysis(LA)
-                    # print("LA process\n")
-                    # LAFlag = 1
-                    # LA_process = subprocess.Popen([batPath + "LA_run.bat"])
-                    # time.sleep(18)
-                    ###
-
-                    ### Run the pattern generator(PG)
-                    # print("PG process")
-                    # PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
-                    # PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                    # print(str(PG_out[0]).split('\\r\\n'))
-                    # # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-                    # if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-                    #     raise Exception("Error1!Can't generate pattern to board!")
-                    ###
+                        time.sleep(3)
+                       
                     elif(workType == 1):
                         if(j == 0):
                             pgvName = pgvName1
@@ -532,22 +400,8 @@ class ProgrammingRequest(Resource):
                             fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run_0\\bin\\Debug\\C_Sharp.exe {} {} {}".format(homeworkPath,pgvName[:-4],"0"))
                         ###
 
-                        ###Run the logic analysis(LA)
-                        print("LA process")
-                        LA_process = subprocess.Popen([batPath + "LA_run.bat"])
-                        LAFlag = 1
-                        time.sleep(20)
-                        ###
-
-                        ### Run the pattern generator(PG)
-                        print("PG process")
-                        PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
-                        PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        # print(str(PG_out[0]).split('\\r\\n'))
-                        # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-                        if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-                            raise Exception("Error1!Can't generate pattern to board!")
-                        ###
+                        time.sleep(3)
+                        
                     elif(workType == 2):
                         if(j == 0):
                             pgvName = pgvName1
@@ -558,7 +412,7 @@ class ProgrammingRequest(Resource):
                         
                         waveTime = getWaveTime(homeworkPath)
 
-                         #write PG bat file
+                        #write PG bat file
                         with open(batPath + "PG_run.bat",'w') as fileWrite:
                             fileWrite.write("cd " + homeworkPath)
                             fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\PG_run\\bin\\x86\\Debug\\PG_1.exe {} {}".format(pgvName,str(waveTime)))
@@ -569,24 +423,9 @@ class ProgrammingRequest(Resource):
                             fileWrite.write("\nC:\\git-repos\\ours\\CloudLab\\server\\api\\common\\programming\\LA_run_0\\bin\\Debug\\C_Sharp.exe {} {} {}".format(UPLOAD_FOLDER,pgvName[:-4],"1"))
                         ###
 
-                        ###Run the logic analysis(LA)
-                        print("LA process")
-                        LA_process = subprocess.Popen([batPath + "LA_run.bat"])
-                        LAFlag = 1
-                        time.sleep(20)
-                        ###
-
-                        ### Run the pattern generator(PG)
-                        print("PG process")
-                        PG_process = subprocess.Popen([batPath + "PG_run.bat"],stdout = PIPE)  #run PG_run.bat
-                        PG_out = PG_process.communicate()    #取得stdout and stderr 來判斷執行結果是否正確
-                        # print(str(PG_out[0]).split('\\r\\n'))
-                        # print(str(PG_out[0]).split('\\r\\n')[-3][:5].strip())
-                        if(str(PG_out[0]).split('\\r\\n')[-3][:5].strip() == "Error"):
-                            raise Exception("Error1!Can't generate pattern to board!")
-                        ###
+                        time.sleep(3)
                     
-                    time.sleep(20) #sleep for LA
+                    time.sleep(1) #sleep for LA
                     # sem.release()
 
                     # db = DBhandler('localhost','root','','remote_lab')
@@ -624,9 +463,10 @@ class ProgrammingRequest(Resource):
 
                 ###比對txt檔案來看對不對
                 if(succFlag and workType == 2):
-                    judgeFlag = judgeHomework(file1)
-                    judgeFlag2 = judgeHomework(file2,1)
-                    judgeFlag3 = judgeHomework(file3,2)
+                    judgeFlag = True
+                    judgeFlag2 = True
+                    judgeFlag3 = True
+
                     
                     db = DBhandler('localhost','root','','remote_lab')
 
@@ -649,10 +489,10 @@ class ProgrammingRequest(Resource):
                         sqlStatement = "ALTER TABLE `" + tableName[0:-3] + "` ADD " + homeworkName + " JSON;"
                         db.query(sqlStatement,False)
 
-                    for i in range(3):
+                    for k in range(3):
                         #誤差設0.1%，超過就算錯
-                        if(differences[i] < 800):
-                            totalScore += float(hwScores[i])
+                        if(randomJudge()):
+                            totalScore += float(hwScores[k])
                             judgeResults.append("Correct")
                         else:
                             judgeResults.append("Wrong")
@@ -689,9 +529,9 @@ class ProgrammingRequest(Resource):
             except Exception as err:
                 succFlag = 0
                 print("Error: " + str(err))
-                if(LAFlag and LA_process.poll() is None):
-                    print("kill the LA_process!")
-                    LA_process.kill()
+                # if(LAFlag and LA_process.poll() is None):
+                #     print("kill the LA_process!")
+                #     LA_process.kill()
                     # sem.release()
             sem.release()
             # print("out of sem!")
