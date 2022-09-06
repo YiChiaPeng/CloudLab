@@ -24,6 +24,12 @@ try:
             PRIMARY KEY (userID) \
         );")
     connection.commit()
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS courses( \
+            courseName varchar(50) NOT NULL, \
+            PRIMARY KEY (courseName) \
+        );")
+    connection.commit()
 
     print("Create the database!")
 except Exception as err:
