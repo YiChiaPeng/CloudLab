@@ -52,7 +52,7 @@ def remote():
 
 @app.route("/course")
 @jwt_required()
-def enterclass():
+def course():
     jwt=JWT_handler()
     db=DBhandler()
     userID=jwt.readToken()["userID"]
@@ -79,7 +79,7 @@ api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
 ##api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
-api.add_resource(course,"/api/course")
+##api.add_resource(course,"/api/course")
 api.add_resource(homework,"/api/homework")
 api.add_resource(homeworks,"/api/homeworks")
 api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest")
