@@ -1,6 +1,6 @@
 #!/bin/python3
 # 載入Flask套件
-from flask import Flask,jsonify, render_template,make_response, send_file
+from flask import Flask, render_template,make_response, send_file
 from flask_restful import Api
 from common.JWT_handler import JWT_handler
 from common.DBhandler import DBhandler
@@ -43,7 +43,7 @@ def verify_user_authorization_courses(userID):
 @jwt.unauthorized_loader
 def unauthorized_callback(callback):
     print("token not authorization")
-    return make_response(render_template("index.html",user="rrr"))
+    return make_response(render_template("index.html"))
 
 
 @app.route("/test")
@@ -68,13 +68,13 @@ def remote():
 ##使用者選課程的頁面
 @app.route("/course")
 @jwt_required()
-def course():
+def enterclass():
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     authorization,courses=verify_user_authorization_courses(userID)
     print(authorization)
     print(courses)
-    return render_template("course.html",authorzation=authorization,courses=courses)
+    return render_template("enterclass.html",authorzation=authorization,courses=courses)
 
 ##使用者瀏覽某堂課程內容作業的頁面
 @app.route("/course/<string:courseName>")
@@ -128,6 +128,7 @@ def get_activeHWfile(courseName,hwName,fileName):
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     return send_file("../file/"+courseName+"/"+hwName+"/"+userID+"/"+fileName)
+
 
 api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")

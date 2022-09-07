@@ -14,7 +14,7 @@ class course(Resource):
     @jwt_required()
     def post(self):
         user=self.jwt.readToken()
-        self.sql="SELECT authorization FROM user where `userID` = \""+user['userID']+"\""
+        self.sql="SELECT authorization,course,userID,userName FROM user where `userID` = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
         if user[0]["authorization"]=="1":
             parser = reqparse.RequestParser()
@@ -30,6 +30,12 @@ class course(Resource):
             self.sql="INSERT INTO `courses`(`courseName`) VALUES (\"{}\")".format(arg['courseName'])
             self.db.query(self.sql,False)
             self.db.create_new_course_table(arg['courseName'])
+            courses=user[0]["course"].split("/")
+            courses.append(arg["courseName"])
+            sql="UPDATE user SET course=\""+"/".join(courses)+"\" WHERE userID=\""+user[0]["userID"]+"\""
+            self.db.query(sql,False)
+            self.sql="INSERT INTO "+arg['courseName']+ " (`userID`,`userName`) VALUES (\"{}\",\"{}\")".format(user[0]["userID"],user[0]["userName"])
+            self.db.query(self.sql,False)
             return {
                 "success":"t",
                 "message":"success!"

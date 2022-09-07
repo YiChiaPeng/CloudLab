@@ -22,28 +22,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import random
+import datetime
 
 sem = threading.Semaphore()
 ALLOWED_EXTENSIONS = {'sof', 'pgv'}
 
 class ProgrammingTest_without_hardware(Resource):
-    '''
-    利用form-data傳資料
-    上傳完PGV和SOF檔之後，之後就會燒程式進去DE0然後回傳law檔案回去
-    Inputs:
-        workType:動作類別  0:單純燒錄    1:助教作業上傳(把檔案(txt和law檔)生出來)    2:學生繳交作業(把檔案生出來，然後做比對，之後再把結果用json物件存進資料表3.4裡)
-        userID:學生帳號
-        pgvFile:pgv檔案    <input type=file name=pgvFile>
-        sofFile:sof檔案    <input type=file name=sofFile>
-        className:課程名稱
-        homeworkName:作業名稱
-    Outputs:
-        law file:燒錄完的波型檔放在正確的位置
-        or
-        txt file:燒錄完的波型用txt檔存起來，之後用來做比對
-
-    還沒寫1.JWT驗證  之後補上
-    '''
     def get(self):
         return {'Msg': 'This is GET method!'}
 
@@ -100,10 +84,16 @@ class ProgrammingTest_without_hardware(Resource):
             return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
         #上傳檔案
-        def upload_file(fileKey):
+        def upload_file(fileKey,type):
             file = request.files[fileKey]
             if file and allowed_file(file.filename):        #檢查副檔名
-                filename = secure_filename(file.filename)    #避免Directory traversal attack
+                # filename = secure_filename(file.filename)    #避免Directory traversal attack
+                if(file.filename[-3:] == "pgv" and type != 1):
+                    filename = userID + ".pgv"
+                elif(file.filename[-3:] == "sof" and type != 1):
+                    filename = userID + ".sof"
+                else:
+                    filename = secure_filename(file.filename)    #避免Directory traversal attack
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))   #存檔
                 return filename
         #創建資料夾
@@ -188,6 +178,48 @@ class ProgrammingTest_without_hardware(Resource):
                 return True
             else:
                 return False
+        
+        def writeStatusIntoSql(type,status):
+            db = DBhandler('localhost','root','','remote_lab')
+            cName = "NULL"
+            hName = "NULL"
+
+            if(type == 0):
+                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + "' and workType = '0';"
+            elif(type == 1):
+                cName = className
+                hName = homeworkName
+                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + " and workType = '1' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
+            else:
+                cName = className
+                hName = homeworkName
+                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + " and workType = '2' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
+
+            result = db.query(sqlStatement,True)
+            #取得目前時間
+            dt = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            if(len(result) == 0):
+                if(type == 0):
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','0',NULL,NULL,'" + dt + "');"
+                elif(type == 1):
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','1','" + cName + "','" + hName + "','" + dt + "');"
+                else:
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','2','" + cName + "','" + hName + "','" + dt + "');"
+            else:
+                if(type == 0):
+                    sqlStatement = "UPDATE userStatus SET `status` = '{}', `datetime` = '{}' WHERE userID = '{}' and workType = '0';".format(status,dt,userID)
+                elif(type == 1):
+                    sqlStatement = "UPDATE userStatus SET `status` = '{}', `datetime` = '{}' WHERE userID = '{}' and workType = '1' and className = '{}' and homeworkName = '{}';".format(status,dt,userID,cName,hName)
+                else:
+                    sqlStatement = "UPDATE userStatus SET `status` = '{}', `datetime` = '{}' WHERE userID = '{}' and workType = '2' and className = '{}' and homeworkName = '{}';".format(status,dt,userID,cName,hName)
+
+            print("The sqlStatement:" + sqlStatement)
+            db.query(sqlStatement,False)
+                    # db.query("INSERT INTO `orderQueue` VALUES('','0','" + userID + "')",False)
+            del db
+            
+
 
 
         # 設定上傳檔案的路徑
@@ -200,8 +232,8 @@ class ProgrammingTest_without_hardware(Resource):
             else:
                 try:
                     make_dir()
-                    sofName = upload_file("sofFile")
-                    pgvName = upload_file("pgvFile")
+                    sofName = upload_file("sofFile",0)
+                    pgvName = upload_file("pgvFile",0)
                     uploadFlag = 1
                 except Exception as er:
                     returnMsg = "Upload the files failed!!" + str(er)
@@ -219,10 +251,10 @@ class ProgrammingTest_without_hardware(Resource):
                 try:
                     make_dirs()
                     #上傳sof,pgv檔到files
-                    sofName = upload_file("sofFile")
-                    pgvName1 = upload_file("pgvFile")
-                    pgvName2 = upload_file("pgvFile2")
-                    pgvName3 = upload_file("pgvFile3")
+                    sofName = upload_file("sofFile",1)
+                    pgvName1 = upload_file("pgvFile",1)
+                    pgvName2 = upload_file("pgvFile2",1)
+                    pgvName3 = upload_file("pgvFile3",1)
                     homeworkPath = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName
                     uploadFlag = 1
                 except Exception as er:
@@ -239,7 +271,7 @@ class ProgrammingTest_without_hardware(Resource):
             else:
                 try:
                     make_dir()
-                    sofName = upload_file("sofFile")
+                    sofName = upload_file("sofFile",2)
                     homeworkPath = "C:\\git-repos\\ours\\CloudLab\\server\\file\\" + className + "\\" + homeworkName
                     ###去資料庫抓作業PGV檔的檔名
                     db = DBhandler('localhost','root','','remote_lab')
@@ -456,10 +488,10 @@ class ProgrammingTest_without_hardware(Resource):
                         sqlStatement = "ALTER TABLE `" + tableName[0:-3] + "` ADD " + homeworkName + " JSON;"
                         db.query(sqlStatement,False)
 
-                    for i in range(3):
+                    for k in range(3):
                         #誤差設0.1%，超過就算錯
                         if(randomJudge()):
-                            totalScore += float(hwScores[i])
+                            totalScore += float(hwScores[k])
                             judgeResults.append("Correct")
                         else:
                             judgeResults.append("Wrong")
@@ -538,16 +570,16 @@ class ProgrammingTest_without_hardware(Resource):
                 content.attach(MIMEText("您的作業上傳失敗!!\n請再重新上傳一次"))  #郵件內容
         # ckystilkvgqxnodh
 
-        with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
-            try:
-                smtp.ehlo()  # 驗證SMTP伺服器
-                smtp.starttls()  # 建立加密傳輸
-                smtp.login("oceanremotelab@gmail.com", "ckystilkvgqxnodh")  # 登入寄件者gmail
-                smtp.send_message(content)  # 寄送郵件
-                print("Email complete!")
-            except Exception as e:
-                emailMsg = "But email failed!"
-                print("Email Error message: ", e)    
+        # with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
+        #     try:
+        #         smtp.ehlo()  # 驗證SMTP伺服器
+        #         smtp.starttls()  # 建立加密傳輸
+        #         smtp.login("oceanremotelab@gmail.com", "ckystilkvgqxnodh")  # 登入寄件者gmail
+        #         smtp.send_message(content)  # 寄送郵件
+        #         print("Email complete!")
+        #     except Exception as e:
+        #         emailMsg = "But email failed!"
+        #         print("Email Error message: ", e)    
         ###
 
         # print("\ngo to the program end!!\n")
