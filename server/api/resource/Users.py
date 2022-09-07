@@ -35,28 +35,9 @@ class Users(Resource):
         self.jwt_handler=JWT_handler()
     
            
-    def get(self):
-        results=self.db_handler.query("SELECT * FROM `user`",True)
-        '''
-        我不確定多個json資料可不可以放在陣列
-        感覺合法
-        但有點奇怪
-        return jsonify(results)
-        '''
-        #有多筆資料
-        items={}
-        for i in range(0,len(results)):
-            items.update({i:results[i]})
-        return jsonify(items)
-
-            
-        
-        
+ 
     
-    '''
-    給路徑檔名csv
-    輸入到資料庫
-    '''
+
     @jwt_required()
     def post(self):
         path="../file/user.csv"

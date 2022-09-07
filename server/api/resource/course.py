@@ -10,7 +10,7 @@ class course(Resource):
         super().__init__()
         self.db=DBhandler()
         self.jwt=JWT_handler()
-
+    
     @jwt_required()
     def post(self):
         user=self.jwt.readToken()
@@ -45,3 +45,27 @@ class course(Resource):
                 "success":"f",
                 "message":"don't hava authorization"
             }
+    @jwt_required()
+    def delete(self):
+        user=self.jwt.readToken()
+        parser = reqparse.RequestParser()
+        parser.add_argument('courseName')
+        arg=parser.parse_args()
+        self.sql="SELECT authorization,course,userID,userName FROM user where `userID` = \""+user['userID']+"\""
+        user=self.db.query(self.sql,True)
+        courses=user[0]["course"].split("/")
+        if user[0]["authorization"]=="1" and arg["courseName"] in courses:
+            self.sql="SELECT userID FROM "+arg["courseName"]
+            course_member=self.db.query(self.sql,True)
+            for member in course_member:
+                self.sql="SELECT course WHERE `userID` =\""+member["userID"]+"\""
+                member_courses=self.db.query(self.sql,True).split("/").remove(arg["courseName"])
+                if(len(member_courses)!=0):
+                    self.sql="UPDATE user SET course=\""+"/".join(member_courses)+"\" WHERE `userID` = \""+member["userID"]+"\""
+                else:
+                    self.sql="DELETE FROM user WHERE `userID` = \""+member["userID"]+"\""
+                self.db.query(self.sql,False)
+            self.sql="DROP TABLE \""+arg["courseName"]+"\""
+            self.db.query(self.sql,False)
+            self.sql="DROP TABLE \""+arg["courseName"]+"_HW\""
+            self.db.query(self.sql,False)
