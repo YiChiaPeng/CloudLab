@@ -74,7 +74,7 @@ def course():
     authorization,courses=verify_user_authorization_courses(userID)
     print(authorization)
     print(courses)
-    return render_template("enterclass.html",authorzation=authorization,courses=courses)
+    return render_template("course.html",authorzation=authorization,courses=courses)
 
 ##使用者瀏覽某堂課程內容作業的頁面
 @app.route("/course/<string:courseName>")

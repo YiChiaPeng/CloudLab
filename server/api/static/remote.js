@@ -43,6 +43,6 @@ function do_pay() {
         data: formData,
         processData: false,
         contentType: false,
-        success: {}
+        success: function(response){}
     })
 }

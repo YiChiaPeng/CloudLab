@@ -609,3 +609,33 @@ label {
   width: 50%;
   height: 50%;
 }
+
+.center {
+  margin: 0; 
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  color: black;
+}
+
+.course_center {
+  width: 75%;
+  height: 50%;
+  margin: 0; 
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  color: black;
+}
+
+.button_center {
+  margin: 0; 
+  position: absolute; 
+  top: -10%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  color: black;
+  text-align: center;
+}
