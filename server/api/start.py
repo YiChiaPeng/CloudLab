@@ -68,13 +68,13 @@ def remote():
 ##使用者選課程的頁面
 @app.route("/course")
 @jwt_required()
-def enterclass():
+def course():
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     authorization,courses=verify_user_authorization_courses(userID)
     print(authorization)
     print(courses)
-    return render_template("enterclass.html",authorzation=authorization,courses=courses)
+    return render_template("course.html",authorzation=authorization,courses=courses)
 
 ##使用者瀏覽某堂課程內容作業的頁面
 @app.route("/course/<string:courseName>")
@@ -133,7 +133,7 @@ api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
 ##api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
-api.add_resource(course,"/api/course")
+##api.add_resource(course,"/api/course")
 api.add_resource(homework,"/api/homework")
 api.add_resource(homeworks,"/api/homeworks")
 api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest")
