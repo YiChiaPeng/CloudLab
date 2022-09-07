@@ -89,7 +89,7 @@ def homeworkbrowse(courseName):
         hw_result=db.query(sql,True)
         print(authorization)
         print(hw_result)
-        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result)
+        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,courseName=courseName)
 
 ##使用者看某項作業的詳細內容
 @app.route("/course/<string:courseName>/<string:hwName>")
