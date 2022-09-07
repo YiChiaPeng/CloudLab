@@ -38,6 +38,20 @@
                         </div>
                     </div>
                 </nav>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <th style="text-align: center;" scope="col">作業內容</th>
+                        </tr>
+                        {% for homeworkName in homework -%}
+                            <tr id="{{homeworkName}}">
+                                <td style="text-align: center;">
+                                    <label>{{homeworkName.homeworkName}}</label>
+                                </td>
+                            </tr>
+                        {%- endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </body>
