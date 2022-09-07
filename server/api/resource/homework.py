@@ -53,12 +53,17 @@ class homework(Resource):
             HW_result=self.db.query(sql,True)
             if(len(HW_result)==1):
                 return {
+                    "success":"f",
                     "message":"name has been used"
                 }
             sql="INSERT INTO "+arg["courseName"]+"_HW (`homeworkInfo`,`homeworkName`) VALUES (\"{}\",\"{}\")".format(arg['homeworkInfo'],arg['homeworkName'])
             self.db.query(sql,False)
+            return {
+                "success":"t"
+            }
         else:
             return {
+                "success":"f",
                 "message":"you can't do this"
             }
     
