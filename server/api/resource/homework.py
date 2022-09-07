@@ -34,4 +34,31 @@ class homework(Resource):
         else:
             return{
                 "message":"you dont have authorization"
-            },
+            }
+
+    @jwt_required()
+    def post(self):
+        user=self.jwt.readToken()
+        parser = reqparse.RequestParser()
+        parser.add_argument('homeworkInfo')
+        parser.add_argument('homeworkName')
+        parser.add_argument("courseName")
+        arg=parser.parse_args()
+        self.sql="SELECT authorization FROM user where `userID` = \""+user['userID']+"\""
+        user=self.db.query(self.sql,True)
+        self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
+        course_result=self.db.query(self.sql,True)
+        if user[0]["authorization"]=="1" and len(course_result)!=0:
+            sql="SELECT * FROM "+arg["courseName"]+"_HW where `homeworkName` = \""+arg['homeworkName']+"\""
+            HW_result=self.db.query(sql,True)
+            if(len(HW_result)==1):
+                return {
+                    "message":"name has been used"
+                }
+            sql="INSERT INTO "+arg["courseName"]+"_HW (`homeworkInfo`,`homeworkName`) VALUES (\"{}\",\"{}\")".format(arg['homeworkInfo'],arg['homeworkName'])
+            self.db.query(sql,False)
+        else:
+            return {
+                "message":"you can't do this"
+            }
+    
