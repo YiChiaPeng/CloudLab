@@ -41,8 +41,27 @@
                         </div>
                     </div>
                 </nav>
+                <h1 style="text-align: center;">作業瀏覽</h1>
+                    <table class="table">
+                        <tr>
+                            <th style="text-align: center;" scope="col">作業列表</th>
+                        </tr>
+                        {% for homeworkName in homeworks -%}
+                            <tr id="{{homeworkName}}">
+                                <td style="text-align: center;">
+                                    <a href="http://127.0.0.1:8087/course/{{courseName}}/{{homeworkName}}">{{homeworkName.homeworkName}}</a>
+                                </td>
+                                <td>
+                                    <input type="button" value="查看學生">
+                                </td>
+                                <td>
+                                    <input type="button" onclick="do_delete()" value="刪除作業">
+                                </td>
+                            </tr>
+                        {%- endfor %}
+                    </table>
             </div>
         </div>
     </body>
-    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'hb.js')}}"></script>
 </html>

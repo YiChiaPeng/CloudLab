@@ -89,7 +89,7 @@ def homeworkbrowse(courseName):
         hw_result=db.query(sql,True)
         print(authorization)
         print(hw_result)
-        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result)
+        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,courseName=courseName)
 
 ##使用者看某項作業的詳細內容
 @app.route("/course/<string:courseName>/<string:hwName>")
@@ -133,7 +133,7 @@ api.add_resource(User, "/api/User")
 api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
 ##api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
-##api.add_resource(course,"/api/course")
+api.add_resource(course,"/api/course")
 api.add_resource(homework,"/api/homework")
 api.add_resource(homeworks,"/api/homeworks")
 api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest")

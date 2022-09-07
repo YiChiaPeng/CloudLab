@@ -9,6 +9,8 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/nivo-lightbox.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/default.css')}}"/>
         <title>進入課程</title>
+        <script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        <script language="JavaScript" type="text/javascript" src="https://github.com/jquery/jquery-migrate"></script>
         <meta name="description" content=""/>
         <meta name="author" content=""/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -48,10 +50,10 @@
                                 <label style="font-size: 200%;">創建新課程 : </label>
                             </div>
                             <div class="form-group mx-sm-3 mb-2">
-                                <label for="inputPassword2" class="sr-only">課程名稱</label>
-                                <input type="password" class="form-control" id="inputPassword2" placeholder="請輸入課程名稱">
+                                <label for="course" class="sr-only">課程名稱</label>
+                                <input type="text" class="form-control" id="course" placeholder="請輸入課程名稱">
                             </div>
-                            <input type="button" class="btn btn-primary mb-2" value="創建 ! ">
+                            <input type="button" class="btn btn-primary mb-2" onclick="do_addCourse()" value="創建 ! ">
                         </form>
                         {% endif %}
                     </div>
@@ -72,4 +74,5 @@
             </div>
         </div>
     </body>
+    <script src="{{ url_for('static', filename = 'course.js')}}"></script>
 </html>
