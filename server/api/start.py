@@ -10,12 +10,14 @@ from flask_jwt_extended import  JWTManager,jwt_required
 ---------------------------------------'''
 from resource.User import User
 from resource.Users import Users
+from resource.member import  member
 from resource.login_handler import login_handler
 from resource.ProgrammingRequest import ProgrammingRequest
 from resource.course import course
 from resource.homework import homework
 from resource.homeworks import homeworks
 from resource.ProgrammingTest_without_hardware import ProgrammingTest_without_hardware
+
 
 
 app = Flask(__name__)
@@ -87,9 +89,12 @@ def homeworkbrowse(courseName):
     if(courseName in courses):
         sql="SELECT homeworkName FROM "+courseName+"_HW "
         hw_result=db.query(sql,True)
+        sql="SELECT userID,userName FROM"+courseName
+        member_result=db.query(sql,True)
         print(authorization)
         print(hw_result)
-        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,courseName=courseName)
+        print(member_result)
+        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,members=member_result)
 
 ##使用者看某項作業的詳細內容
 @app.route("/course/<string:courseName>/<string:hwName>")
@@ -137,6 +142,7 @@ api.add_resource(login_handler,"/api/login")
 api.add_resource(course,"/api/course")
 api.add_resource(homework,"/api/homework")
 api.add_resource(homeworks,"/api/homeworks")
+api.add_resource(member,"/api/member")
 api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest")
 
 if __name__ == "__main__":
