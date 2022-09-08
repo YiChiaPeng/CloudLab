@@ -81,3 +81,7 @@ class homework(Resource):
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
             sql="DELETE FROM "+arg["courseName"]+"_HW WHERE `homeworkName` =\""+arg["homeworkName"]+"\""
             self.db.query(sql,False)
+            return {
+                "success":"t",
+                "message":"刪除成功"
+            }
