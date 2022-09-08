@@ -13,6 +13,7 @@ from resource.Users import Users
 from resource.login_handler import login_handler
 from resource.ProgrammingRequest import ProgrammingRequest
 from resource.course import course
+from resource.ProgrammingTest_without_hardware import ProgrammingTest_without_hardware
 
 
 app = Flask(__name__)
@@ -29,5 +30,6 @@ api.add_resource(Users, "/api/Users")
 api.add_resource(login_handler,"/api/login")
 api.add_resource(ProgrammingRequest,"/api/ProgrammingRequest")
 api.add_resource(course,"/api/course")
+api.add_resource(ProgrammingTest_without_hardware,"/api/ProgrammingRequest_without_hardware")
 if __name__ == "__main__":
     app.run(port=8087,debug=True)
