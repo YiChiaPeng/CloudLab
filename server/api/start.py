@@ -1,10 +1,13 @@
 #!/bin/python3
 # 載入Flask套件
-from flask import Flask, render_template,make_response, send_file
+from flask import Flask, render_template,make_response, send_file,request
 from flask_restful import Api
 from common.JWT_handler import JWT_handler
 from common.DBhandler import DBhandler
+from common.mailSender import mail_sender
 from flask_jwt_extended import  JWTManager,jwt_required
+from werkzeug.security import generate_password_hash
+
 '''--------------------------------------
     import api所提供的resouce file
 ---------------------------------------'''
@@ -23,7 +26,7 @@ from resource.ProgrammingTest_without_hardware import ProgrammingTest_without_ha
 app = Flask(__name__)
 jwt=JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'test' 
-app.config['JWT_TOKEN_LOCATION']=['headers','cookies']
+app.config['JWT_TOKEN_LOCATION']=['headers','cookies','query_string']
 app.config['JWT_ACCESS_COOKIE_NAME']="access_token_cookie"
 app.config['JWT_ACCESS_TOKEN_EXPIRES']=3600
 
@@ -33,6 +36,7 @@ Api要提供的resource放在resource
 
 api = Api(app)
 
+mail=mail_sender()
 def verify_user_authorization_courses(userID):
     db=DBhandler()
     sql="SELECT authorization,course FROM `user` WHERE `userID`=\""+userID+"\""
@@ -89,7 +93,7 @@ def homeworkbrowse(courseName):
     if(courseName in courses):
         sql="SELECT homeworkName FROM "+courseName+"_HW "
         hw_result=db.query(sql,True)
-        sql="SELECT userID,userName FROM"+courseName
+        sql="SELECT userID,userName FROM "+courseName
         member_result=db.query(sql,True)
         print(authorization)
         print(hw_result)
@@ -133,6 +137,64 @@ def get_activeHWfile(courseName,hwName,fileName):
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     return send_file("../file/"+courseName+"/"+hwName+"/"+userID+"/"+fileName)
+
+
+@app.route('/api/resetpassword', methods=['POST'])
+@jwt_required()
+def reset_password_mail():
+    jwt=JWT_handler()
+    db=DBhandler()
+    userID=jwt.readToken()["userID"]
+    sql="SELECT userID,userName FROM `user` WHERE `userID`=\""+userID+"\""
+    user_result=db.query(sql,True)
+    if len(user_result)!=0:
+        token=create_reset_token(userID,user_result[0]["userName"])
+        mail.send_resetPassword_mail(userID,token)
+        return {
+            "message":"go to check email"
+        }
+
+##信件當中連結開啟的頁面
+@app.route("/resetPassword")
+@jwt_required()
+def reset_password():
+    jwt=JWT_handler()
+    db=DBhandler()
+    user=jwt.readToken()
+    sql="SELECT userID,userName FROM `user` WHERE `userID`=\""+user["user"]+"\""
+    user=db.query(sql,True)
+    if len(user)!=0:
+        return render_template("resetPassword.html",user=user[0])
+    
+##提交新密碼後的api
+@app.route("/api/do_resetPassword",methods=['POST'])
+@jwt_required()
+def do_resetPassword():
+    jwt=JWT_handler()
+    db=DBhandler()
+    user=jwt.readToken()
+    userID=request.form.get("userID")
+    userName=request.form.get("userName")
+    password=request.form.get("newPassword")
+    if user["name"]==userName and user["user"]==userID:
+        sql="UPDATE user SET password=\""+generate_password_hash(password)+"\" WHERE `userID` = \""+userID+"\""
+        db.query(sql,False)
+        return {
+            "success":"t",
+            "message":"更改密碼成功"
+        }
+        
+
+
+##更改密碼認證信的token產生函式
+def create_reset_token(userID,userName):
+    jwt=JWT_handler()
+    data={
+        "name":userName,
+        "user":userID
+    }
+    return jwt.makeToken(data)
+
 
 
 api.add_resource(User, "/api/User")

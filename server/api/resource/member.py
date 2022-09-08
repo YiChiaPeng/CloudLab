@@ -6,6 +6,7 @@ from flask_restful import Resource,request
 from common.DBhandler import DBhandler
 from flask_jwt_extended import  jwt_required
 from common.JWT_handler import JWT_handler
+from werkzeug.security import generate_password_hash
 
 class member(Resource):
 
@@ -39,7 +40,7 @@ class member(Resource):
             for row in rows:
                 sql="SELECT * FROM `user` WHERE `userID`={}".format(row["userID"])
                 if(len(self.db_handler.query(sql,True))==0):
-                    sql="INSERT INTO `user`(`userID`,`password`,`userName`,`course`,`authorization`) VALUES (\"{}\",\"{}\",\"{}\",\"{}\",\'{}\')".format(row['userID'],"a"+row['userID'],row['userName'],courseName,"0")
+                    sql="INSERT INTO `user`(`userID`,`password`,`userName`,`course`,`authorization`) VALUES (\"{}\",\"{}\",\"{}\",\"{}\",\'{}\')".format(row['userID'],generate_password_hash(password=row["userID"]),row['userName'],courseName,"0")
                     self.db_handler.query(sql,False)
                 else:
                     sql="SELECT course FROM `user` WHERE `userID`={}".format(row["userID"])
@@ -52,6 +53,10 @@ class member(Resource):
                         self.db_handler.query(sql,False)
                 sql="INSERT INTO`"+ courseName+"`(`userID`,`userName`) VALUES (\"{}\",\"{}\")".format(row['userID'],row['userName'])
                 self.db_handler.query(sql,False)
+            return {
+                "success":"t",
+                "message":"成功新增"
+        }
     
     @jwt_required()
     def delete(self):
@@ -62,7 +67,24 @@ class member(Resource):
         result=self.db_handler.query(sql,True)
         if( len(result)==0 or result[0]["authorization"]!="1" or (courseName not in result[0]["course"].split("/")) ):
             return {
+                "success":"f",
                 "message":"you can't do this"
         }
         sql="DELETE FROM "+courseName+" WHERE `userID`= \""+userID+"\""
         self.db_handler.query(sql,False)
+        return {
+            "success":"t",
+            "message":"成功剔除該學生"
+        }
+
+
+'''
+刪除成員{
+    type:"delete",
+    url:"/api/member",
+    data:{
+        courseName,
+        userID  (要刪除的那個)
+    }
+}
+'''

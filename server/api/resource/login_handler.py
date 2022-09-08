@@ -2,6 +2,7 @@ from flask_restful import Resource
 from common.DBhandler import DBhandler
 from flask import request
 from common.JWT_handler import JWT_handler
+from werkzeug.security import check_password_hash
 
 class login_handler(Resource):
     def __init__(self) -> None:
@@ -14,8 +15,9 @@ class login_handler(Resource):
         self.sql="SELECT * FROM user where `userID` = \""+uId+"\""
         result=self.db.query(self.sql,True)
         if(len(result)==1):
-            #暫時先不加密處理，之後再改
-            if(uPassword==result[0]['password']):
+            print(uPassword)
+            print(result[0]["password"])            
+            if(check_password_hash(result[0]["password"], uPassword)):
                 jwt=JWT_handler()
                 return {
                     "jwt_token":jwt.makeToken(data={"userID":result[0]["userID"]}),

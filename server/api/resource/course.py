@@ -69,3 +69,17 @@ class course(Resource):
             self.db.query(self.sql,False)
             self.sql="DROP TABLE \""+arg["courseName"]+"_HW\""
             self.db.query(self.sql,False)
+            return {
+                "success":"t",
+                "message":"刪除成功"
+            }
+
+'''
+刪除課程{
+    type:"delete",
+    url:"api/course",
+    data (JSON.sringify) : {
+        courseName
+    }
+}
+'''
