@@ -22,32 +22,28 @@
             <div>
                 <nav id="menu" class="navbar navbar-default navbar-fixed-top">
                     <div class="navbar-header">
-                        <a class="navbar-brand page-scroll" href="#page-top"><img src="{{ url_for('static', filename = 'logo.png')}}"></a>
+                        <a style="position: relative; top: -10px;" class="navbar-brand page-scroll" href="#page-top"><img src="{{ url_for('static', filename = 'logo.png')}}"></a>
                     </div>
                     <div class="container">
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
+                                </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
                                 </li>
-                                <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
-                                    <input type="button" class="page-scroll" onclick="do_courseCheck()" value="作業瀏覽">
-                                </li>
-                                <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkcontent" class="page-scroll">作業內容</a>
-                                    <input type="button" class="page-scroll" onclick="do_courseCheck()" value="作業內容">
-                                </li>
                             </ul>
                         </div>
                     </div>
                 </nav>
                 <h1 style="text-align: center;" id="courseName">作業瀏覽:{{courseName}}</h1>
-                <div style="text-align: left;">
-                    <input id="show" type="button" class="btn btn-primary mb-2" onclick="showDialog()" value="新增作業">
+                <div>
+                    <label style="position: relative; left: 190px;">
+                    <input id="show" type="button" class="btn btn-primary mb-2" onclick="show_Newhomework_Dialog()" value="新增作業">
                     <dialog id="newHomework" class="dialog">
                         <form class="form-inline mb-2">
                             <div class="form-group">
@@ -66,25 +62,54 @@
                                 <input type="text" class="form-control" id="homeworkInfo" style="height: 240px;" placeholder="請輸入作業內容">
                             </div>
                             <br>
-                            <input id="close" type="button" class="btn btn-primary mb-2" onclick="closeDialog()" value="創建 ! ">
+                            <input id="close" type="button" class="btn btn-primary mb-2" onclick="summit_NewHomework()" value="創建 ! ">
+                            <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="member_Close()" value="關閉">
                         </form>
                     </dialog>
-                    <br>
-                    <input type="button" class="btn btn-primary mb-2" value="學生名單">
-                    <br>
-                    <input type="button" class="btn btn-primary mb-2" value="解散課程">
+                    </label>
+                    <label style="position: relative; left: 200px;">
+                    <input type="button" class="btn btn-primary mb-2" onclick="show_Member_Dialog()" value="學生名單">
+                    <dialog id="members" style="width: 480px; height: auto;">
+                        <label>
+                            <input id="csvFile" type="file" accept=".csv" value="新增學生">
+                        </label>
+                        <label>
+                            <input type="button" class="btn btn-primary mb-2" onclick="summit_Member()" value="繳交 ! ">
+                        </label>
+                        <label style="position: relative; left: 110px;">
+                            <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="member_Close()" value="關閉">
+                        </label>
+                        <table class="table">
+                            <tr style="text-align: center;">
+                                <th colspan="3" style="text-align: center;" scope="col">學生列表</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center;">姓名</th>
+                                <th style="text-align: center;">學號</th>
+                                <th style="text-align: center;"></th>
+                            </tr>
+                            {% for userName in members -%}                            
+                                <tr id="member">
+                                    <td id="name" style="text-align: center;">{{userName.userName}}</td>
+                                    <td id="id" style="text-align: center;">{{userName.userID}}</td>
+                                    <td><input type="button" class="btn btn-primary mb-2" onclick="do_Member_Delete()" value="剔除學生"></td>
+                                </tr>
+                            {%- endfor %}
+                        </table>
+                    </dialog>
+                    </label>
+                    <label style="position: relative; left: 1100px;">
+                        <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="delete_Course_Check()" value="解散課程">
+                    </label>
                 </div>
                 <div style="width: 75%; height: 50%; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: black;">
                 <table class="table">
                     <tr style="text-align: center;">
-                        <td style="text-align: center;" scope="col">作業列表</td>
+                        <th style="text-align: center;" scope="col">作業列表</th>
                     </tr>
                     {% for homeworkName in homeworks -%}                            
                         <tr id="{{homeworkName}}">
-                            <td style="text-align: center;">
-                                <a href="http://127.0.0.1:8087/course/{{courseName}}/{{homeworkName}}">{{homeworkName.homeworkName}}</a>
-                                <input type="button" class="btn btn-primary mb-2" onclick="do_delete()" value="刪除作業">
-                            </td>
+                            <td style="text-align: center;"><a href="http://127.0.0.1:8087/course/{{courseName}}/{{homeworkName}}">{{homeworkName.homeworkName}}</a></td>
                         </tr>
                     {%- endfor %}
                 </table>

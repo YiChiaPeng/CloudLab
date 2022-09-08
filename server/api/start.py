@@ -89,12 +89,12 @@ def homeworkbrowse(courseName):
     if(courseName in courses):
         sql="SELECT homeworkName FROM "+courseName+"_HW "
         hw_result=db.query(sql,True)
-        sql="SELECT userID,userName FROM"+courseName
+        sql="SELECT userID,userName FROM "+courseName
         member_result=db.query(sql,True)
         print(authorization)
         print(hw_result)
         print(member_result)
-        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,members=member_result)
+        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,members=member_result,courseName=courseName)
 
 ##使用者看某項作業的詳細內容
 @app.route("/course/<string:courseName>/<string:hwName>")
