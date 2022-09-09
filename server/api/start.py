@@ -109,9 +109,13 @@ def homeworkcontent(courseName,hwName):
     if(courseName in courses):
         sql="SELECT homeworkName,homeworkInfo,txtName,score,score2,score3 FROM "+courseName+"_HW  WHERE homeworkName=\""+hwName+"\""
         hw_result=db.query(sql,True)
+        score=None
+        if authorization=="0":
+            sql="SELECT "+hwName+" FROM "+courseName+"  WHERE `userID`=\""+userID+"\""
+            score=db.query(sql,True)
         print(authorization)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,score=score)
 
 
 ##回傳遠端燒錄的檔案載點
