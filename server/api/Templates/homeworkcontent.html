@@ -27,13 +27,16 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
-                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
-                                </li>
-                                <li class="">
                                     <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
+                                </li>
+                                <li class="">
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
+                                </li>
+                                <li class="">
+                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
                                 </li>
                             </ul>
                         </div>
@@ -41,17 +44,24 @@
                 </nav>
                 <div style="width: 720px; position: relative; left: 25%;">
                     <h1 style="text-align: center;" id="courseName">作業內容:{{courseName}}</h1>
+                    <input type="button" name="back" class="btn btn-primary mb-2" onclick="javascript:history.back(-1);" value="返回作業列表">
                     <table class="table">
                         <tr style="height: 100px;">
                             <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業名稱</th>
-                            <td colspan="2" style="text-align: center;">
-                                homework.homeworkName
-                            </td>
+                            <td colspan="2" style="text-align: center;">{{homework.homeworkName}}</td>
                         </tr>
                         <tr style="height: 100px;">
                             <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業內容</th>
-                            <td colspan="2" style="text-align: center;">
-                                homework.homeworkInfo
+                            <td colspan="2" style="text-align: center;">{{homework.homeworkInfo}}</td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">pgv載點</th>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/pgv">pgv</a>
+                            </td>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/law">law</a>
+
                             </td>
                         </tr>
                         <tr style="height: 100px;">
@@ -59,36 +69,39 @@
                             <td colspan="2"></td>
                         </tr>
                         <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">SoF載點</th>
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">sof載點</th>
                             <td>
-                                <input id="soffile" type="file" style="display: none;" accept=".sof" value="上傳"></input>
-                                <label id="sofupload" for="soffile"><img style="width: 160px; height: 90px; position: relative; left: 80px;" src="{{ url_for('static', filename = 'upload01.png')}}"></label>
+                                <a download href="http://127.0.0.1:8087/file/{{userID}}/sof">sof</a>
                             </td>
                             <td>
-                                <input id="soffile" type="file" style="display: none;" accept=".sof" value="上傳"></input>
-                                <label id="sofupload" for="soffile"><img style="width: 160px; height: 90px; position: relative; left: 80px;" src="{{ url_for('static', filename = 'upload01.png')}}"></label>
+                                <a download href="http://127.0.0.1:8087/file/{{userID}}/law">law</a>
                             </td>
                         </tr>
                         <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">PgV載點</th>
-                            <td>
-                                <input id="soffile" type="file" style="display: none;" accept=".sof" value="上傳"></input>
-                                <label id="sofupload" for="soffile"><img style="width: 160px; height: 90px; position: relative; left: 80px;" src="{{ url_for('static', filename = 'upload01.png')}}"></label>
-                            </td>
-                            <td>
-                                <input id="soffile" type="file" style="display: none;" accept=".sof" value="上傳"></input>
-                                <label id="sofupload" for="soffile"><img style="width: 160px; height: 90px; position: relative; left: 80px;" src="{{ url_for('static', filename = 'upload01.png')}}"></label>
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">SoF上傳</th>
+                            <td colspan="2">
+                                <input type="file" accept=".sof" value="上傳">
                             </td>
                         </tr>
+                        {% if authorization == '1' %}
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 40px; font-size: 20px;">pvg上傳</th>
+                            <td style="width: 150px;">
+                                <input type="file" accept=".pgv" value="上傳">
+                                <input style="position: relative; top: 15px;" type="file" accept=".pgv" value="上傳">
+                                <input style="position: relative; top: 30px;" type="file" accept=".pgv" value="上傳">
+                            </td>
+                            <td>
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                            </td>
+                        </tr>
+                        {% endif%}
                     </table>
-                    {% if homework.authorzation is 1 %}
-                        <input type="file" value="pgv上傳"></input>
-                    {% else %}
-                        <input type="file" value="sof上傳"></input>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </body>
-    <script src="{{ url_for('static', filename = 'pccheck.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
 </html>

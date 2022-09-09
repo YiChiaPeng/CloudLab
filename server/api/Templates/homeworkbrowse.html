@@ -28,19 +28,23 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
-                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
-                                </li>
-                                <li class="">
                                     <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
+                                </li>
+                                <li class="">
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
+                                </li>
+                                <li class="">
+                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </nav>
                 <h1 style="text-align: center;" id="courseName">作業瀏覽:{{courseName}}</h1>
+                {% if authorzation == '1' %}
                 <div>
                     <label style="position: relative; left: 190px;">
                     <input id="show" type="button" class="btn btn-primary mb-2" onclick="show_Newhomework_Dialog()" value="新增作業">
@@ -102,6 +106,7 @@
                         <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="delete_Course_Check()" value="解散課程">
                     </label>
                 </div>
+                {% endif %}
                 <div style="width: 75%; height: 50%; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: black;">
                 <table class="table">
                     <tr style="text-align: center;">
@@ -118,5 +123,5 @@
         </div>
     </body>
     <script src="{{ url_for('static', filename = 'homeworkbrowse.js')}}"></script>
-    <script src="{{ url_for('static', filename = 'pccheck.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
 </html>

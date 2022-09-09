@@ -20,3 +20,19 @@ function do_login() {
     })
 }
 
+//登出
+function do_logout() {
+    document.cookie = "access_token_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    window.location.href = '/'
+}
+
+//更改密碼
+function password_Change_Check() {
+    var pccMessage = confirm("確定要更改密碼 ? ");
+    if (pccMessage==true) {
+
+    }
+    else {
+        
+    }
+}
