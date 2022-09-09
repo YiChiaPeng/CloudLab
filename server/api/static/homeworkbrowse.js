@@ -27,7 +27,7 @@ function do_addHomework() {
 
 function do_addMember() {
     let formData = new FormData();
-    formData.append('file', document.getElementById('csvFile'),files[0]);
+    formData.append('file', document.getElementById('csvFile').files[0]);
     formData.append('courseName', $('#courseName').text().split(":" )[1]);
 
     $.ajax({
@@ -72,8 +72,8 @@ function show_Member_Dialog() {
 
 function summit_Member() {
     do_addMember();
-    document.getElementById('members').close();
-    location.reload();
+    //document.getElementById('members').close();
+    //location.reload();
 }
 
 function member_Close() {
@@ -96,16 +96,6 @@ function do_Member_Delete() {
         },
         success: function(response) {}
     });
-}
-
-function password_Change_Check() {
-    var pccMessage = confirm("確定要更改密碼 ? ");
-    if (pccMessage==true) {
-
-    }
-    else {
-        
-    }
 }
 
 function delete_Course_Check() {

@@ -74,7 +74,7 @@
                             <input id="csvFile" type="file" accept=".csv" value="新增學生">
                         </label>
                         <label>
-                            <input type="button" class="btn btn-primary mb-2" onclick="summit_Member()" value="繳交 ! ">
+                            <input type="button" style="position: relative; left:40px;" class="btn btn-primary mb-2" onclick="summit_Member()" value="繳交 ! ">
                         </label>
                         <label style="position: relative; left: 110px;">
                             <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="member_Close()" value="關閉">
@@ -89,9 +89,9 @@
                                 <th style="text-align: center;"></th>
                             </tr>
                             {% for userName in members -%}                            
-                                <tr id="member">
-                                    <td id="name" style="text-align: center;">{{userName.userName}}</td>
-                                    <td id="id" style="text-align: center;">{{userName.userID}}</td>
+                                <tr>
+                                    <td style="text-align: center;">{{userName.userName}}</td>
+                                    <td style="text-align: center;">{{userName.userID}}</td>
                                     <td><input type="button" class="btn btn-primary mb-2" onclick="do_Member_Delete()" value="剔除學生"></td>
                                 </tr>
                             {%- endfor %}
@@ -118,4 +118,5 @@
         </div>
     </body>
     <script src="{{ url_for('static', filename = 'homeworkbrowse.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'pccheck.js')}}"></script>
 </html>
