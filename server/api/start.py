@@ -1,5 +1,6 @@
 #!/bin/python3
 # 載入Flask套件
+from distutils import extension
 from flask import Flask, render_template,make_response, send_file,request
 from flask_restful import Api
 from common.JWT_handler import JWT_handler
@@ -56,9 +57,6 @@ def unauthorized_callback(callback):
 def testUP():
     return render_template("test.html")
 
-@app.route("/file/<string:userID>")
-def download():
-    return send_file("../file/user.csv", as_attachment=True) 
 
 ##登入頁面
 @app.route("/")
@@ -117,18 +115,32 @@ def homeworkcontent(courseName,hwName):
 
 
 ##回傳遠端燒錄的檔案載點
+
+@app.route("/file")
+@jwt_required()
+def get_ile():
+    jwt=JWT_handler()
+    userID=jwt.readToken()["userID"]
+    print(userID)
+    extension="sof"
+    return send_file("../file/"+userID+"/"+userID+"."+extension, as_attachment=True)
+
+
 @app.route("/file/<string:extension>")
 @jwt_required()
 def get_file(extension):
+    print("1")
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
+    print(extension)
+    print(userID)
     return send_file("../file/"+userID+"/"+userID+"."+extension, as_attachment=True)
 
 ##回傳特定作業的固定檔案的載點
 @app.route("/staticFile/<string:courseName>/<string:hwName>/<string:fileName>")
 @jwt_required()
 def get_HWfile(courseName,hwName,fileName):
-    return send_file("../file/"+courseName+"/"+hwName+"/"+fileName)
+    return send_file("../file/"+courseName+"/"+hwName+"/"+fileName, as_attachment=True)
 
 ##回傳特定作業的非固定檔案的載點
 @app.route("/activeFile/<string:courseName>/<string:hwName>/<string:fileName>")
@@ -136,7 +148,12 @@ def get_HWfile(courseName,hwName,fileName):
 def get_activeHWfile(courseName,hwName,fileName):
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
-    return send_file("../file/"+courseName+"/"+hwName+"/"+userID+"/"+fileName)
+    return send_file("../file/"+courseName+"/"+hwName+"/"+userID+"/"+fileName, as_attachment=True)
+
+@app.route("/file/pgv")
+@jwt_required()
+def get_pgv_teaching():
+    return send_file("../file/pgv.pdf", as_attachment=True)
 
 
 @app.route('/api/resetpassword', methods=['POST'])
