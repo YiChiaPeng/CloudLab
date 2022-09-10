@@ -13,7 +13,6 @@ function do_addHomework() {
             homeworkInfo: $('#homeworkInfo').val(),
             homeworkName: $('#homeworkName').val(),
             courseName: $('#courseName').text().split(":" )[1]
-
         }),
         success: function(response){
             if (response.success == 't'){
@@ -101,7 +100,24 @@ function do_Member_Delete() {
 function delete_Course_Check() {
     var dccMessage = confirm("確定要解散課程 ? ");
     if (dccMessage==true) {
-
+        $.ajax({
+            type: 'delete',
+            url: 'api/course',
+            headers: {
+                'Authorization': 'Bearer ' + currentCookie
+            },
+            data: JSON.stringify({
+                courseName: $('#courseName').text().split(":")[1]
+            }),
+            success: function(response) {
+                if (response.response == 't'){
+                    window.location.href = '/course';
+                }
+                else {
+                    alert("解散失敗");
+                }
+            }
+        })
     }
     else {
         
