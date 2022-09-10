@@ -115,7 +115,7 @@ def homeworkcontent(courseName,hwName):
             score=db.query(sql,True)
         print(authorization)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,courseName=courseName,score=score)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,courseName=courseName,score=score,userID=userID)
 
 
 ##回傳遠端燒錄的檔案載點

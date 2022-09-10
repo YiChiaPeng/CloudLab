@@ -42,62 +42,42 @@
                         </div>
                     </div>
                 </nav>
-                <div style="width: 720px; position: relative; left: 25%;">
+                <div style="position: absolute; left: 160px; right: 160px">
                     <h1 style="text-align: center;" id="courseName">作業內容:{{courseName}}</h1>
-                    <input type="button" name="back" class="btn btn-primary mb-2" onclick="javascript:history.back(-1);" value="返回作業列表">
+                    <input type="button" name="back" style="position: relative; top: -5px;" class="btn btn-primary mb-2" onclick="javascript:history.back(-1);" value="返回作業列表">
                     <table class="table">
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業名稱</th>
-                            <td colspan="2" style="text-align: center;">{{homework.homeworkName}}</td>
+                        <tr>
+                            <th style="font-size: 20px; width: 100px;">作業標題</th>
+                            <td colspan="0" style="text-align: center;">{{homeworkName}}</td>
                         </tr>
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業內容</th>
-                            <td colspan="2" style="text-align: center;">{{homework.homeworkInfo}}</td>
+                        <tr aria-rowspan="3">
+                            <th style="font-size: 20px; height: 300px; width: 100px; position: relative; top: 140px;">作業說明</th>
+                            <td colspan="0" style="height: 300px;">{{homework}}</td>
                         </tr>
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">pgv載點</th>
+                    </table>
+                    <table class="table" style="width: 480px; position: absolute; left: 0px;">
+                        <tr>
+                            <th style="font-size: 20px; width: 20px;">檔案上傳區</th>
                             <td>
-                                <a download href="http://127.0.0.1:8087/file/pgv">pgv</a>
-                            </td>
-                            <td>
-                                <a download href="http://127.0.0.1:8087/file/law">law</a>
-
-                            </td>
-                        </tr>
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">繳交情況</th>
-                            <td colspan="2"></td>
-                        </tr>
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">sof載點</th>
-                            <td>
-                                <a download href="http://127.0.0.1:8087/file/{{userID}}/sof">sof</a>
-                            </td>
-                            <td>
-                                <a download href="http://127.0.0.1:8087/file/{{userID}}/law">law</a>
-                            </td>
-                        </tr>
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">SoF上傳</th>
-                            <td colspan="2">
                                 <input type="file" accept=".sof" value="上傳">
-                            </td>
-                        </tr>
-                        {% if authorization == '1' %}
-                        <tr style="height: 100px;">
-                            <th style="width: 100px; position: relative; top: 40px; font-size: 20px;">pvg上傳</th>
-                            <td style="width: 150px;">
+                                {% if authorization == '1' %}
                                 <input type="file" accept=".pgv" value="上傳">
-                                <input style="position: relative; top: 15px;" type="file" accept=".pgv" value="上傳">
-                                <input style="position: relative; top: 30px;" type="file" accept=".pgv" value="上傳">
-                            </td>
-                            <td>
-                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
-                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
-                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                                <input type="file" accept=".pgv" value="上傳">
+                                <input type="file" accept=".pgv" value="上傳">
+                                <td>
+                                    <input class="form-control" id="" placeholder="配分">
+                                    <input class="form-control" id="" placeholder="配分">
+                                    <input class="form-control" id="" placeholder="配分">
+                                </td>
+                                {% endif%}
                             </td>
                         </tr>
-                        {% endif%}
+                    </table>
+                    <table class="table" style="width: 480px; position: absolute; right: 0px;">
+                        <tr>
+                            <th style="font-size: 20px; width: 20px;">檔案載點</th>
+                            <td></td>
+                        </tr>
                     </table>
                 </div>
             </div>
