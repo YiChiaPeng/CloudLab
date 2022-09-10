@@ -19,7 +19,7 @@ try:
             userID varchar(50) NOT NULL, \
             userName  varchar(30) NOT NULL, \
             authorization  varchar(10) NOT NULL, \
-            password varchar(70) NOT NULL, \
+            password TEXT NOT NULL, \
             course varchar(800) NOT NULL, \
             PRIMARY KEY (userID) \
         );")
