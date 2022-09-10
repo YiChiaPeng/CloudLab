@@ -116,7 +116,7 @@ def homeworkcontent(courseName,hwName):
         print(authorization)
         print(hw_result)
 <<<<<<< HEAD
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,courseName=courseName)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,courseName=courseName,score=score)
 =======
         return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,score=score)
 >>>>>>> a2cd20756ca30086e411633e6f19adccc079820d
