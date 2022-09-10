@@ -28,12 +28,6 @@ function do_pay() {
     formData.append('pgvFile', document.getElementById('pgvfile').files[0]);
     formData.append('workType', 0);
 
-    let object = {};
-    formData.forEach((val, key) => {
-        object[key] = val;
-    });
-    console.log(object)
-
     $.ajax({
         type: 'POST',
         url: '/api/ProgrammingRequest',

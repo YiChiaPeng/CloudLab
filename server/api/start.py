@@ -72,7 +72,7 @@ def remote():
 ##使用者選課程的頁面
 @app.route("/course")
 @jwt_required()
-def enterclass():
+def coursechoose():
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     authorization,courses=verify_user_authorization_courses(userID)
@@ -96,7 +96,7 @@ def homeworkbrowse(courseName):
         print(authorization)
         print(hw_result)
         print(member_result)
-        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,members=member_result)
+        return render_template("homeworkbrowse.html",authorzation=authorization,homeworks=hw_result,members=member_result,courseName=courseName)
 
 ##使用者看某項作業的詳細內容
 @app.route("/course/<string:courseName>/<string:hwName>")
@@ -115,7 +115,11 @@ def homeworkcontent(courseName,hwName):
             score=db.query(sql,True)
         print(authorization)
         print(hw_result)
+<<<<<<< HEAD
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,courseName=courseName)
+=======
         return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result,score=score)
+>>>>>>> a2cd20756ca30086e411633e6f19adccc079820d
 
 
 ##回傳遠端燒錄的檔案載點

@@ -33,10 +33,10 @@
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkcontent" class="page-scroll">作業內容</a>
+                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
                                 </li>
                             </ul>
                         </div>
@@ -75,4 +75,5 @@
         </div>
     </body>
     <script src="{{ url_for('static', filename = 'course.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
 </html>

@@ -39,16 +39,19 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
+                                    <a download href="/file/pgv" class="page-scroll">pvg檔說明</a>
+                                </li>
+                                <li class="">
                                     <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkcontent" class="page-scroll">作業內容</a>
+                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
                                 </li>
                             </ul>
                         </div>
@@ -65,10 +68,31 @@
                     </div>
                     <input id="paybutton" type="button" style="display: none;" onclick="do_pay()"></input>
                     <label for="paybutton"><img class="uploadimg" src="{{ url_for('static', filename = 'upload05.png')}}"></label>
+                </div>
+                <div style="width:240px; position: relative; top: 480px; left: 1280px;">
+                    <table style="width: 270px;" class="table">
+                        <tr>
+                            <th>上傳時間</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>pgv載點</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>sof載點</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>law載點</th>
+                            <td></td>
+                        </tr>
+                    </table>
                 </div>      
             </div>
         </div>   
     </body>
     <script src="{{ url_for('static', filename = 'config.js')}}"></script>
     <script src="{{ url_for('static', filename = 'remote.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
 </html>

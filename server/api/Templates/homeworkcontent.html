@@ -9,8 +9,12 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/nivo-lightbox.css')}}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'nivo-lightbox/default.css')}}"/>
         <title>作業內容</title>
+        <script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        <script language="JavaScript" type="text/javascript" src="https://github.com/jquery/jquery-migrate"></script>
         <meta name="description" content=""/>
         <meta name="author" content=""/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
         <div id="root">
@@ -29,16 +33,75 @@
                                     <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkbrowse" class="page-scroll">作業瀏覽</a>
+                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/homeworkcontent" class="page-scroll">作業內容</a>
+                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </nav>
+                <div style="width: 720px; position: relative; left: 25%;">
+                    <h1 style="text-align: center;" id="courseName">作業內容:{{courseName}}</h1>
+                    <input type="button" name="back" class="btn btn-primary mb-2" onclick="javascript:history.back(-1);" value="返回作業列表">
+                    <table class="table">
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業名稱</th>
+                            <td colspan="2" style="text-align: center;">{{homework.homeworkName}}</td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">作業內容</th>
+                            <td colspan="2" style="text-align: center;">{{homework.homeworkInfo}}</td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">pgv載點</th>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/pgv">pgv</a>
+                            </td>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/law">law</a>
+
+                            </td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">繳交情況</th>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">sof載點</th>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/{{userID}}/sof">sof</a>
+                            </td>
+                            <td>
+                                <a download href="http://127.0.0.1:8087/file/{{userID}}/law">law</a>
+                            </td>
+                        </tr>
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 35px; font-size: 20px;">SoF上傳</th>
+                            <td colspan="2">
+                                <input type="file" accept=".sof" value="上傳">
+                            </td>
+                        </tr>
+                        {% if authorization == '1' %}
+                        <tr style="height: 100px;">
+                            <th style="width: 100px; position: relative; top: 40px; font-size: 20px;">pvg上傳</th>
+                            <td style="width: 150px;">
+                                <input type="file" accept=".pgv" value="上傳">
+                                <input style="position: relative; top: 15px;" type="file" accept=".pgv" value="上傳">
+                                <input style="position: relative; top: 30px;" type="file" accept=".pgv" value="上傳">
+                            </td>
+                            <td>
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                                <input type="text" style="width: 60px;" class="form-control" id="" placeholder="配分">
+                            </td>
+                        </tr>
+                        {% endif%}
+                    </table>
+                </div>
             </div>
         </div>
     </body>
+    <script src="{{ url_for('static', filename = 'js.js')}}"></script>
 </html>

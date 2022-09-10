@@ -6,10 +6,11 @@ function do_addCourse() {
         type: 'POST',
         url: '/api/course',
         headers: {
-            'Authorization': 'Bearer ' + currentCookie
+            'Authorization': 'Bearer ' + currentCookie,
+            'Content-Type' : 'application/json' 
         },
         data: JSON.stringify({
-            couese: $('#course').val()
+            courseName: $('#course').val()
         }),
         success: function(response){
             if (response.success == 't'){
