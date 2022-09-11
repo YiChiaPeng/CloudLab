@@ -79,8 +79,9 @@ class homework(Resource):
         parser.add_argument("score2")
         parser.add_argument("score3")
         arg=parser.parse_args()
-        self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
-        course_result=self.db.query(self.sql,True)
+        self.sql="SELECT authorization,course FROM user where `userID` = \""+user['userID']+"\""
+        user=self.db.query(self.sql,True)
+        course_result=user[0]["course"].split("/")
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
             sql="UPDATE "+arg["homeworkName"]+"_HW SET homeworkInfo=\""+arg["homeworkInfo"]+"\", homeworkName=\""+arg["homeworkName"]+"\", score="+int(arg["score1"])+",score2="+int(arg["score2"])+", score3="+int(arg["score3"])
             self.db.query(sql,False)
@@ -92,14 +93,14 @@ class homework(Resource):
     
     @jwt_required()
     def delete(self):
+        user=self.jwt.readToken()
         parser = reqparse.RequestParser()
         parser.add_argument("courseName")
+        parser.add_argument("homeworkName")
         arg=parser.parse_args()
         self.sql="SELECT authorization,course FROM user where `userID` = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
-        self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
-        course_result=self.db.query(self.sql,True)
-        if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
+        if user[0]["authorization"]=="1"  and (arg["courseName"] in user[0]["course"].split("/")):
             sql="DELETE FROM "+arg["courseName"]+"_HW WHERE `homeworkName` =\""+arg["homeworkName"]+"\""
             self.db.query(sql,False)
             return {

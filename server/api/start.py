@@ -127,13 +127,10 @@ def homeworkcontent(courseName,hwName):
         else:    
             sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
             status=db.query(sql,True)
-        upload_datetime=None
-        if(len(status)==1):
-            upload_datetime=datetime.strftime(status[0]["datetime"], '%Y-%m-%d %H:%M:%S')
         print(authorization)
         print(status)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status)
 
 @app.route("/remote/getStatus")
 @jwt_required()
