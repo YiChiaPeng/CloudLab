@@ -42,7 +42,7 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
-                                    <a download href="/file/pgv" class="page-scroll" style="position: absolute; top: -25px; left: -400px;">pvg檔說明</a>
+                                    <a download href="/file/pgv" class="page-scroll" style="position: absolute; top: -25px; left: -400px;">pgv檔說明</a>
                                 </li>
                                 <li class="">
                                     <a href="http://127.0.0.1:8087/remote" class="page-scroll" style="position: absolute; top: -25px; left: -300px;">遠端燒錄</a>
@@ -74,25 +74,39 @@
                 </div>
                 <div style="width:240px; position: relative; top: 100px; left: 1080px;">
                     <table style="width: 270px;" class="table">
-                        <tr>
-                            <th>上傳時間</th>
-                            <td colspan="2"></td>
+                        <tr id="time">
+                            {% if status|length ==0 %}
+                            <th>上傳時間:-----------</th>
+                            {% else %}
+                            <th>{{ time }}</th>
+                            {% endif %}
                         </tr>
-                        <tr>
+                        <tr id="sof">
+                            {% if status|length ==0 %}
                             <th>sof檔載點</th>
-                            <td colspan="2"></td>
+                            {% else %}
+                            <th><a href="/getfile/sof" download>sof載點</a></th>
+                            {% endif %}
                         </tr>
-                        <tr>
+                        <tr  id="pgv">
+                            {% if status|length ==0 %}
                             <th>pgv檔載點</th>
-                            <td>1</td>
+                            {% else %}
+                            <th><a href="/getfile/pgv" download>pgv載點</a></th>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <th>law檔載點</th>
-                            <td>
+                            <td id="law">
+                                {% if status|length ==0  %}
+                                尚未進行燒錄
+                                {% elif status|length == 1 and status[0].status==0 %}
                                 <button class="btn btn-primary" style="color: black; background-color: white; border-color: white;" type="button" disabled>
                                     <span class="spinner-border spinner-border-sm" style="color: black;" role="status" aria-hidden="true"></span>
                                     燒錄中...
                                 </button>
+                                {% else  %}
+                                <a href="/getfile/law" download>law檔載點</a>
+                                {% endif %}
                             </td>
                         </tr>
                     </table>

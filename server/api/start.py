@@ -8,6 +8,7 @@ from common.DBhandler import DBhandler
 from common.mailSender import mail_sender
 from flask_jwt_extended import  JWTManager,jwt_required
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 '''--------------------------------------
     import api所提供的resouce file
@@ -70,9 +71,12 @@ def remote():
     jwt=JWT_handler()
     db=DBhandler()
     userID=jwt.readToken()["userID"]
-    sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\""
+    sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\""
     status=db.query(sql,True)
-    return render_template("remote.html",status=status)
+    upload_datetime=None
+    if(len(status)==1):
+        upload_datetime=datetime.strftime(status[0]["datetime"], '%Y-%m-%d %H:%M:%S')
+    return render_template("remote.html",status=status,time=upload_datetime)
 
 ##使用者選課程的頁面
 @app.route("/course")
@@ -118,25 +122,39 @@ def homeworkcontent(courseName,hwName):
         if authorization=="0":
             sql="SELECT "+hwName+" FROM "+courseName+"  WHERE `userID`=\""+userID+"\""
             score=db.query(sql,True)
-            sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=2 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=1 "
             status=db.query(sql,True)
         else:    
-            sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=1 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
             status=db.query(sql,True)
-        print(score)
+        upload_datetime=None
+        if(len(status)==1):
+            upload_datetime=datetime.strftime(status[0]["datetime"], '%Y-%m-%d %H:%M:%S')
         print(authorization)
         print(status)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
 
 @app.route("/remote/getStatus")
 @jwt_required()
 def getStatus():
     db=DBhandler()
+    jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
-    sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\""
+    sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\""
     status=db.query(sql,True)
-    return status
+    upload_datetime=datetime.strftime(status[0]["datetime"], '%Y-%m-%d %H:%M:%S')
+    print(status)
+    if(len(status)==1):
+        return {
+            "success":"t",
+            "status":status[0]["status"],
+            "time":upload_datetime
+        }
+    else:
+        return {
+            "success":"f"
+        }
 
 @app.route("/course/<string:courseName>/<string:hwName>/getUpdateStatus")
 @jwt_required()
@@ -157,21 +175,9 @@ def getSummitStatus(courseName,hwName):
     
 
 ##回傳遠端燒錄的檔案載點
-
-@app.route("/file")
-@jwt_required()
-def get_ile():
-    jwt=JWT_handler()
-    userID=jwt.readToken()["userID"]
-    print(userID)
-    extension="sof"
-    return send_file("../file/"+userID+"/"+userID+"."+extension, as_attachment=True)
-
-
-@app.route("/file/<string:extension>")
+@app.route("/getfile/<string:extension>")
 @jwt_required()
 def get_file(extension):
-    print("1")
     jwt=JWT_handler()
     userID=jwt.readToken()["userID"]
     print(extension)

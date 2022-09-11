@@ -94,13 +94,13 @@
                                 <th style="text-align: center;">學號</th>
                                 <th style="text-align: center;"></th>
                             </tr>
-                            {% for userName in members -%}                            
-                                <tr>
+                            {% for test in members -%}                            
+                                <tr >
+                                    <td style="text-align: center;">{{ test.userName }}</td>
+                                    <td style="text-align: center;">{{ test.userID }}</td>
                                     <td style="text-align: center;">
-                                        <input type="checkbox" name="" value="{{userName.userID}}">
+                                        <input type="button" style="position: relative; left:40px;" class="btn btn-primary mb-2" onclick="delete_member('{{ test.userID }}')" value="繳交 ! ">
                                     </td>
-                                    <td style="text-align: center;">{{userName.userName}}</td>
-                                    <td style="text-align: center;">{{userName.userID}}</td>
                                 </tr>
                             {%- endfor %}
                         </table>

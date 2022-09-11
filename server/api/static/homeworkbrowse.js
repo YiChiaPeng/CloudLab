@@ -80,8 +80,23 @@ function member_Close() {
 }
 
 
-function do_Member_Delete() {
-    alert($(this).text());
+function delete_member(userID) {
+    $.ajax({
+        url:"/api/member",
+        method:"delete",
+        headers: {
+            'Authorization': 'Bearer ' + currentCookie,
+        },
+        data:{
+            courseName: $('#courseName').text().split(":")[1],
+            userID:userID
+        },
+        success:function (response){
+            var select="#member_"+userID;
+            $(select).empty()
+
+        }
+    })
 }
 
 function delete_Course_Check() {
