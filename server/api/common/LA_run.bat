@@ -1,2 +1,2 @@
-cd C:\git-repos\ours\CloudLab\server\file\系統程式\作業跟作業
-C:\git-repos\ours\CloudLab\server\api\common\programming\LA_run_0\bin\Debug\C_Sharp.exe C:\git-repos\ours\CloudLab\server\file\系統程式\作業跟作業 decoder2to4 0
+cd C:\git-repos\ours\CloudLab\server\file\微積分\eeee
+C:\git-repos\ours\CloudLab\server\api\common\programming\LA_run_0\bin\Debug\C_Sharp.exe C:\git-repos\ours\CloudLab\server\file\微積分\eeee decoder2to4 0

@@ -117,13 +117,15 @@
                         </tr>
                     </table>
                     <table class="table" style="width: 480px; position: fixed; top: 500px; left: 890px;">
+                        {% if authorization == '1' %}
                         <tr>
+                            {% if status|length ==0   %}
                             <th>上傳時間</th>
-                            <td colspan="2"></td>
-                        </tr>
-                        <tr>
-                            <th>sof檔連結</th>
-                            <td colspan="2"></td>
+                            {% else %}
+                            <th>{{ time }}</th>
+                            {% endif%}
+                            <td colspan="3"></td>
+
                         </tr>
                         <tr>
                             <th>pgv檔連結</th>
@@ -131,20 +133,59 @@
                             <th>配分</th>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            {% if status|length ==0   %}
+                            <td>公開測資pgv檔</td>
+                            <td>公開測資law檔</td>
+                            {% else %}
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName}}" download>公開測資pgv檔案</a>
+                            </td>
+                            {% if status.status ==0   %}
+                            <td>公開測資law檔</td>
+                            {% else %}            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName|replace("pgv","law")}}" download>公開測資law檔</a>                
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score}}</td>
                         </tr>
-                        {% if authorization == '1' %}
+                       
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            {% if status|length ==0   %}
+                            <td>隱藏測資1_pgv檔</td>
+                            <td>隱藏測資1_law檔</td>
+                            {% else %}
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName2}}" download>隱藏測資1_pgv檔案</a>
+                            </td>
+                            {% if status.status ==0   %}
+                            <td>隱藏測資1_law檔</td>
+                            {% else %}            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName2|replace("pgv","law")}}" download>隱藏測資1_law檔</a>                
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score2}}</td>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            {% if status|length ==0   %}
+                            <td>隱藏測資2_pgv檔</td>
+                            <td>隱藏測資2_law檔</td>
+                            {% else %}
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName3}}" download>隱藏測資2_pgv檔案</a>
+                            </td>
+                            {% if status.status ==0   %}
+                            <td>隱藏測資2_law檔</td>
+                            {% else %}            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName3|replace("pgv","law")}}" download>隱藏測資2_law檔</a>                
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score3}}</td>
                         </tr>
                         {% endif %}
                     </table>
