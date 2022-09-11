@@ -25,6 +25,24 @@ try:
         );")
     connection.commit()
 
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS courses( \
+            courseName varchar(50) NOT NULL, \
+            PRIMARY KEY (courseName) \
+        );")
+    connection.commit()
+
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS userstatus( \
+            userID varchar(50) NOT NULL, \
+            status int(5) NOT NULL, \
+            workType int(5) NOT NULL, \
+            className varchar(50),  \
+            homeworkName varchar(50), \
+            datetime datetime(6) NOT NULL \
+        );")
+    connection.commit()
+
     print("Create the database!")
 except Exception as err:
     print("Error: " + err)

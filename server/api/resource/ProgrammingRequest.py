@@ -138,6 +138,7 @@ class ProgrammingRequest(Resource):
                 data = data.strip()
                 # print(data)
                 tmp = data.splitlines()
+                tmp = [x for x in tmp if x != '']    #把無用空格去掉
 
                 timeUnit = tmp[3]
                 timeUnit = timeUnit.strip()[5] #取得時間單位
@@ -650,8 +651,8 @@ class ProgrammingRequest(Resource):
                         db.query(sqlStatement,False)
 
                     for i in range(3):
-                        #誤差設0.1%，超過就算錯
-                        if(differences[i] < 800):
+                        #誤差設0.2%，超過就算錯
+                        if(differences[i] < 2000):
                             totalScore += float(hwScores[i])
                             judgeResults.append("Correct")
                         else:
