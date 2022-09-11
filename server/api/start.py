@@ -134,7 +134,7 @@ def homeworkcontent(courseName,hwName):
         print(status)
         print(hw_result)
         print(upload_datetime)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
+        return render_template("homeworkcontent.html",userID=userID,authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
 
 @app.route("/remote/getStatus")
 @jwt_required()

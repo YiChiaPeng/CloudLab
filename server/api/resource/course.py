@@ -58,7 +58,7 @@ class course(Resource):
             self.sql="SELECT userID FROM "+arg["courseName"]
             course_member=self.db.query(self.sql,True)
             for member in course_member:
-                self.sql="SELECT course WHERE `userID` =\""+member["userID"]+"\""
+                self.sql="SELECT course FROM user WHERE `userID` =\""+member["userID"]+"\""
                 member_courses=self.db.query(self.sql,True).split("/").remove(arg["courseName"])
                 if(len(member_courses)!=0):
                     self.sql="UPDATE user SET course=\""+"/".join(member_courses)+"\" WHERE `userID` = \""+member["userID"]+"\""

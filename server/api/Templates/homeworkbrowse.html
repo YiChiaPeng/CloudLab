@@ -95,11 +95,11 @@
                                 <th style="text-align: center;"></th>
                             </tr>
                             {% for test in members -%}                            
-                                <tr >
+                                <tr id="member_{{test.userID}}" >
                                     <td style="text-align: center;">{{ test.userName }}</td>
                                     <td style="text-align: center;">{{ test.userID }}</td>
                                     <td style="text-align: center;">
-                                        <input type="button" style="position: relative; left:40px;" class="btn btn-primary mb-2" onclick="delete_member('{{ test.userID }}')" value="繳交 ! ">
+                                        <input type="button" style="position: relative; left:40px;" class="btn btn-primary mb-2" onclick="delete_member('{{ test.userID }}')" value="刪除 ! ">
                                     </td>
                                 </tr>
                             {%- endfor %}

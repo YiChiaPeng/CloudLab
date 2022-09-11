@@ -89,8 +89,9 @@ function delete_member(userID) {
             userID:userID
         },
         success:function (response){
-            var select="#member_"+userID;
-            $(select).empty()
+            var select="member_"+userID;
+            document.getElementById(select).innerHTML=""
+
         }
     })
 }
@@ -100,9 +101,10 @@ function delete_Course_Check() {
     if (dccMessage==true) {
         $.ajax({
             type: 'delete',
-            url: 'api/course',
+            url: '/api/course',
             headers: {
-                'Authorization': 'Bearer ' + currentCookie
+                'Authorization': 'Bearer ' + currentCookie,
+                "content-Type":"application/json"
             },
             data: JSON.stringify({
                 courseName: $('#courseName').text().split(":")[1]

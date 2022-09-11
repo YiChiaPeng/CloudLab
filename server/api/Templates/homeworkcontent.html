@@ -121,40 +121,112 @@
                         </tr>
                     </table>
                     <table class="table" style="width: 480px; position: fixed; top: 500px; left: 890px;">
-                        <tr>
-                            <th>上傳時間</th>
-                            <td colspan="2">{{time}}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a download href="/file/pgv">公開測資pgv檔</a>
-                            </td>
-                            <td>
-                                <a download href="/file/law">公開測資law檔</a>
-                            </td>
-                            <td>
-                                <a download href="/file/law">我產生的law檔</a>
-                            </td>
-                        </tr>
                         {% if authorization == '1' %}
                         <tr>
+                            {% if status|length ==0   %}
+                            <th colspan="3">上傳時間</th>
+                            {% else %}
+                            <th colspan="3">{{ time }}</th>
+                            {% endif%}
+                        </tr>
+                        <tr>
+                            <th>pgv檔連結</th>
+                            <th>law檔連結</th>
+                            <th>配分</th>
+                        </tr>
+                        <tr>
+                            {% if status|length ==0   %}
+                            <td>公開測資pgv檔</td>
+                            <td>公開測資law檔</td>
+                            {% else %}
                             <td>
-                                <a download href="/file/pgv">隱藏測資1pgv檔</a>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName}}" download>公開測資pgv檔案</a>
                             </td>
+                            {% if status.status ==0   %}
+                            <td>公開測資law檔</td>
+                            {% else %}            
                             <td>
-                                <a download href="/file/law">隱藏測資1law檔</a>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName|replace('pgv','law')}}" download>公開測資law檔</a>                
                             </td>
-                            <td>3</td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score}}</td>
+                        </tr>
+                        <tr>
+                            {% if status|length ==0   %}
+                            <td>隱藏測資1_pgv檔</td>
+                            <td>隱藏測資1_law檔</td>
+                            {% else %}
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName2}}" download>隱藏測資1_pgv檔案</a>
+                            </td>
+                            {% if status.status ==0   %}
+                            <td>隱藏測資1_law檔</td>
+                            {% else %}            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName2|replace('pgv','law')}}" download>隱藏測資1_law檔</a>                
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score2}}</td>
+                        </tr>
+                        <tr>
+                            {% if status|length ==0   %}
+                            <td>隱藏測資2_pgv檔</td>
+                            <td>隱藏測資2_law檔</td>
+                            {% else %}
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName3}}" download>隱藏測資2_pgv檔案</a>
+                            </td>
+                            {% if status.status ==0   %}
+                            <td>隱藏測資2_law檔</td>
+                            {% else %}            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName3|replace('pgv','law')}}" download>隱藏測資2_law檔</a>                
+                            </td>
+                            {% endif%}
+                            {% endif%}
+                            <td>{{homework.score3}}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            {% if status|length ==0 %}
+                            <th colspan="3">上傳時間</th>
+                            {% else %}
+                            <th colspan="3">{{ time }}</th>
+                            {% endif%}
+                        </tr>
+                        <tr>
+                            <th>分數</th>
+                            <th colspan="2">{{score.Scores}}</th>
                         </tr>
                         <tr>
                             <td>
-                                <a download href="/file/pgv">隱藏測資2</a>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName}}" download>公開測資pgv檔案</a>
+                            </td>            
+                            <td>
+                            <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName|replace('pgv','law')}}" download>公開測資law檔</a>                
                             </td>
                             <td>
-                                <a download href="/file/law">隱藏測資2</a>
+                                {% if status.status == 0 %}
+                                    我產生的law檔
+                                {% else %}
+                                    <a href="/activeFile/{{courseName}}/{{homework.homeworkName}}/{{userID}}/{{homework.txtName|replace('pgv','law')}}" download>我產生的law檔</a> 
+                                {% endif %}
                             </td>
-                            <td>3</td>
                         </tr>
+                        <tr>
+                            <th>公開測資</th>
+                            <th>隱藏測資1</th>
+                            <th>隱藏測資2</th>
+                        </tr>
+                        {% if status.status == 1 %}
+                            <tr>
+                                <td>{{score.test}}</td>
+                                <td>{{score.test2}}</td>
+                                <td>{{score.test3}}</td>
+                            </tr>
+                        {% endif %}
                         {% endif %}
                     </table>
                 </div>
