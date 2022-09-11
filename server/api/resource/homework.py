@@ -46,8 +46,7 @@ class homework(Resource):
         arg=parser.parse_args()
         self.sql="SELECT authorization,course FROM user where `userID` = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
-        self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
-        course_result=self.db.query(self.sql,True)
+        course_result=user[0]["course"].split("/")
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
             sql="SELECT * FROM "+arg["courseName"]+"_HW where `homeworkName` = \""+arg['homeworkName']+"\""
             HW_result=self.db.query(sql,True)
@@ -57,6 +56,9 @@ class homework(Resource):
                     "message":"name has been used"
                 }
             sql="INSERT INTO "+arg["courseName"]+"_HW (`homeworkInfo`,`homeworkName`) VALUES (\"{}\",\"{}\")".format(arg['homeworkInfo'],arg['homeworkName'])
+            self.db.query(sql,False)
+            sql="ALTER TABLE "+arg["courseName"]+" ADD "+arg["homeworkName"]+" JSON;"
+            print(sql)
             self.db.query(sql,False)
             return {
                 "success":"t"
