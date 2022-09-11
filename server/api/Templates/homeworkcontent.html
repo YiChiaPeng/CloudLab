@@ -123,31 +123,26 @@
                     <table class="table" style="width: 480px; position: fixed; top: 500px; left: 890px;">
                         <tr>
                             <th>上傳時間</th>
-                            <td colspan="2"></td>
-                        </tr>
-                        <tr>
-                            <th>pgv檔連結</th>
-                            <th>law檔連結</th>
-                            <th>配分</th>
+                            <td colspan="2">{{time}}</td>
                         </tr>
                         <tr>
                             <td>
-                                <a download href="/file/pgv">公開測資</a>
+                                <a download href="/file/pgv">公開測資pgv檔</a>
                             </td>
                             <td>
-                                <a download href="/file/law">公開測資</a>
+                                <a download href="/file/law">公開測資law檔</a>
                             </td>
                             <td>
-                                {{homework.score}}
+                                <a download href="/file/law">我產生的law檔</a>
                             </td>
                         </tr>
                         {% if authorization == '1' %}
                         <tr>
                             <td>
-                                <a download href="/file/pgv">隱藏測資1</a>
+                                <a download href="/file/pgv">隱藏測資1pgv檔</a>
                             </td>
                             <td>
-                                <a download href="/file/law">隱藏測資1</a>
+                                <a download href="/file/law">隱藏測資1law檔</a>
                             </td>
                             <td>3</td>
                         </tr>
@@ -162,11 +157,15 @@
                         </tr>
                         {% endif %}
                         <tr>
+                            <th>總分</th>
                             <th>公開測資</th>
                             <th>隱藏測資1</th>
                             <th>隱藏測資2</th>
                         </tr>
                         <tr>
+                            <td>
+                                {{score[0].Scores}}
+                            </td>
                             <td>分數</td>
                             <td>分數</td>
                             <td>分數</td>
