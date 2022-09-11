@@ -123,6 +123,7 @@ def homeworkcontent(courseName,hwName):
         else:    
             sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
             status=db.query(sql,True)
+        print(score)
         print(authorization)
         print(status)
         print(hw_result)

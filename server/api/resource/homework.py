@@ -76,8 +76,8 @@ class homework(Resource):
         parser.add_argument("courseName")
         parser.add_argument("homeworkInfo")
         parser.add_argument("score1")
-        parser.add_argument("score")
-        parser.add_argument("courseName")
+        parser.add_argument("score2")
+        parser.add_argument("score3")
         arg=parser.parse_args()
         self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
         course_result=self.db.query(self.sql,True)
