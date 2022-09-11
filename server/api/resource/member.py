@@ -70,8 +70,21 @@ class member(Resource):
                 "success":"f",
                 "message":"you can't do this"
         }
+        sql="SELECT authorization FROM `user` WHERE `userID`={}".format(userID)
+        if( self.db_handler.query(sql,True)[0]["authorization"]=="1"):
+            return {
+                "meesage":"he or she is a administrator"
+            }
         sql="DELETE FROM "+courseName+" WHERE `userID`= \""+userID+"\""
         self.db_handler.query(sql,False)
+        self.sql="SELECT course FROM user WHERE `userID` =\""+userID+"\""
+        print(self.sql)
+        member_courses=self.db_handler.query(self.sql,True)[0]["course"].split("/").remove(courseName)
+        if(len(member_courses)!=0):
+            self.sql="UPDATE user SET course=\""+"/".join(member_courses)+"\" WHERE `userID` = \""+userID+"\""
+        else:
+            self.sql="DELETE FROM user WHERE `userID` = \""+userID+"\""
+        self.db_handler.query(self.sql,False)
         return {
             "success":"t",
             "message":"成功剔除該學生"
