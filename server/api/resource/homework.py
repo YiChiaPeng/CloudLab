@@ -82,7 +82,7 @@ class homework(Resource):
         self.sql="SELECT * FROM courses where `courseName` = \""+arg['courseName']+"\""
         course_result=self.db.query(self.sql,True)
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
-            sql="UPDATE "+arg["homeworkName"]+"_HW SET homeworkInfo=\""+arg["homeworkInfo"]+"\", homeworkName=\""+arg["homeworkName"]+"\", score="+arg["score1"]+",score2="+arg["score2"]+", score3="+arg["score3"]
+            sql="UPDATE "+arg["homeworkName"]+"_HW SET homeworkInfo=\""+arg["homeworkInfo"]+"\", homeworkName=\""+arg["homeworkName"]+"\", score="+int(arg["score1"])+",score2="+int(arg["score2"])+", score3="+int(arg["score3"])
             self.db.query(sql,False)
             return {
                 "message":"更新成功"
