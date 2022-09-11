@@ -73,6 +73,7 @@ class homework(Resource):
         user=self.jwt.readToken()
         parser = reqparse.RequestParser()
         parser.add_argument('homeworkName')
+        parser.add_argument('oldhomeworkName')
         parser.add_argument("courseName")
         parser.add_argument("homeworkInfo")
         parser.add_argument("score1")
@@ -83,7 +84,8 @@ class homework(Resource):
         user=self.db.query(self.sql,True)
         course_result=user[0]["course"].split("/")
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
-            sql="UPDATE "+arg["homeworkName"]+"_HW SET homeworkInfo=\""+arg["homeworkInfo"]+"\", homeworkName=\""+arg["homeworkName"]+"\", score="+int(arg["score1"])+",score2="+int(arg["score2"])+", score3="+int(arg["score3"])
+            sql="UPDATE "+arg["courseName"]+"_HW SET homeworkInfo=\""+arg["homeworkInfo"]+"\", homeworkName=\""+arg["homeworkName"]+"\", score="+arg["score1"]+",score2="+arg["score2"]+", score3="+arg["score3"]+" WHERE homeworkName=\""+arg["oldhomeworkName"]+"\""
+            print(sql)
             self.db.query(sql,False)
             return {
                 "message":"更新成功"
@@ -98,7 +100,7 @@ class homework(Resource):
         parser.add_argument("courseName")
         parser.add_argument("homeworkName")
         arg=parser.parse_args()
-        self.sql="SELECT authorization,course FROM user where `userID` = \""+user['userID']+"\""
+        self.sql="SELECT authorization,course FROM user where userID = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
         if user[0]["authorization"]=="1"  and (arg["courseName"] in user[0]["course"].split("/")):
             sql="DELETE FROM "+arg["courseName"]+"_HW WHERE `homeworkName` =\""+arg["homeworkName"]+"\""
