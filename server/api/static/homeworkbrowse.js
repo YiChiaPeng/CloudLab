@@ -61,7 +61,7 @@ function summit_NewHomework() {
 }
 
 function newhomework_Close() {
-    document.getElementsByClassName('dialog')[0].close();
+    location.reload();
 }
 
 //MemberDialog
@@ -76,25 +76,12 @@ function summit_Member() {
 }
 
 function member_Close() {
-    document.getElementById('members').close();
     location.reload();
 }
 
 
 function do_Member_Delete() {
-
-    $.ajax({
-        type: 'delete',
-        url: '/api/member',
-        headers: {
-            'Authorization': 'Bearer ' + currentCookie
-        },
-        data: {
-            courseName: $('#courseName').text().split(":" )[1],
-            userID: $(this).prev('#id').text()
-        },
-        success: function(response) {}
-    });
+    alert($(this).text());
 }
 
 function delete_Course_Check() {

@@ -13,30 +13,31 @@
         <script language="JavaScript" type="text/javascript" src="https://github.com/jquery/jquery-migrate"></script>
         <meta name="description" content=""/>
         <meta name="author" content=""/>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     </head>
     <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
         <div id="root">
             <div>
-                <nav id="menu" class="navbar navbar-default navbar-fixed-top">
+                <nav id="menu" class="navbar navbar-default navbar-fixed-top" style="height: 80px;">
                     <div class="navbar-header">
-                        <a class="navbar-brand page-scroll" href="#page-top"><img src="{{ url_for('static', filename = 'logo.png')}}"></a>
+                        <a class="navbar-brand page-scroll" style="position: absolute; top: 8px;" href="#page-top"><img src="{{ url_for('static', filename = 'logo.png')}}"></a>
                     </div>
                     <div class="container">
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/remote" class="page-scroll">遠端燒錄</a>
+                                    <a href="http://127.0.0.1:8087/remote" class="page-scroll" style="position: absolute; top: -25px; left: -300px;">遠端燒錄</a>
                                 </li>
                                 <li class="">
-                                    <a href="http://127.0.0.1:8087/course" class="page-scroll">進入課程</a>
+                                    <a href="http://127.0.0.1:8087/course" class="page-scroll" style="position: absolute; top: -25px; left: -200px; font-size: 15px;">進入課程</a>
                                 </li>
                                 <li class="">
-                                    <input type="button" style="position: relative; top: 10px;" onclick="password_Change_Check()" class="btn btn-danger" value="更改密碼">
+                                    <input type="button" onclick="password_Change_Check()" class="btn btn-danger" style="position: absolute; top: -15px; left: -100px; font-size: 15px;" value="更改密碼">
                                 </li>
                                 <li class="">
-                                    <input type="button" style="position: relative; top: 10px; left: 30px;" onclick="do_logout()" class="btn btn-danger" value="登出">
+                                    <input type="button" onclick="do_logout()" class="btn btn-danger" style="position: absolute; top: -15px; left: 0px; font-size: 15px;" value="登出">
                                 </li>
                             </ul>
                         </div>
@@ -45,25 +46,61 @@
                 <div style="position: absolute; left: 160px; right: 160px">
                     <h1 style="text-align: center;" id="courseName">作業內容:{{courseName}}</h1>
                     <input type="button" name="back" style="position: relative; top: -5px;" class="btn btn-primary mb-2" onclick="javascript:history.back(-1);" value="返回作業列表">
+                    {% if authorization == '1' %}
+                    <input type="button" name="dialog" style="position: relative; top: -5px; left: 1060px;" class="btn btn-primary mb-2" onclick="show_change_homeworkcontent()" value="編輯作業">
+                    <dialog id="changeHomecontent" class="dialog">
+                        <form class="form-inline mb-2">
+                            <div class="form-group">
+                                <label style="font-size: 200%;">作業名稱 : </label>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2">
+                                <label for="homeworkName" class="sr-only">作業名稱</label>
+                                <input type="text" class="form-control" id="homeworkName" placeholder="{{homework.homeworkName}}">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 200%;">作業說明 : </label>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2" style="height: 270px;">
+                                <label for="homeworkInfo" class="sr-only">作業說明</label>
+                                <input type="text" class="form-control" style="height: 200px;" id="homeworkInfo" placeholder="{{homework.homeworkInfo}}">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 200%;">配分 : </label>
+                            </div>
+                            <div style="margin: 10px;">
+                                <label for="score" class="sr-only">配分</label>
+                                <input type="text" class="form-control" id="score" placeholder="{{score}}"><br>
+                                <input type="text" class="form-control" id="score" placeholder="{{score}}"><br>
+                                <input type="text" class="form-control" id="score" placeholder="{{score}}">
+                            </div>
+                            <input id="close" type="button" class="btn btn-primary mb-2"" onclick="" value="編輯">
+                            <input type="button" style="background-color: red;" class="btn btn-primary mb-2" onclick="close_change_homeworkcontent()" value="關閉">
+                        </form>
+                    </dialog>
+                    {% endif%}
                     <table class="table">
                         <tr>
                             <th style="font-size: 20px; width: 100px;">作業標題</th>
-                            <td colspan="0" style="text-align: center;">{{homeworkName}}</td>
+                            <th colspan="0" style="text-align: center; font-size: 20px;">{{homework.homeworkName}}</th>
                         </tr>
                         <tr aria-rowspan="3">
                             <th style="font-size: 20px; height: 300px; width: 100px; position: relative; top: 140px;">作業說明</th>
-                            <td colspan="0" style="height: 300px;">{{homework}}</td>
+                            <td colspan="0" style="height: 300px; font-size: 20px;">
+                                {{homework.homeworkInfo}}
+                            </td>
                         </tr>
                     </table>
                     <table class="table" style="width: 480px; position: absolute; left: 0px;">
                         <tr>
                             <th style="font-size: 20px; width: 20px;">檔案上傳區</th>
                             <td>
-                                <input type="file" accept=".sof" value="上傳">
                                 {% if authorization == '1' %}
                                 <input type="file" accept=".pgv" value="上傳">
                                 <input type="file" accept=".pgv" value="上傳">
                                 <input type="file" accept=".pgv" value="上傳">
+                                {% endif%}
+                                <input type="file" accept=".sof" value="上傳">
+                                {% if authorization == '1' %}
                                 <td>
                                     <input class="form-control" id="" placeholder="配分">
                                     <input class="form-control" id="" placeholder="配分">
@@ -72,16 +109,48 @@
                                 {% endif%}
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="3">
+                                <input type="button" class="btn btn-primary mb-2" onclick="" value="提交">
+                            </td>
+                        </tr>
                     </table>
                     <table class="table" style="width: 480px; position: absolute; right: 0px;">
                         <tr>
-                            <th style="font-size: 20px; width: 20px;">檔案載點</th>
-                            <td></td>
+                            <th>上傳時間</th>
+                            <td colspan="2"></td>
                         </tr>
+                        <tr>
+                            <th>sof檔連結</th>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <th>pgv檔連結</th>
+                            <th>law檔連結</th>
+                            <th>配分</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        {% if authorization == '1' %}
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        {% endif %}
                     </table>
                 </div>
             </div>
         </div>
     </body>
     <script src="{{ url_for('static', filename = 'js.js')}}"></script>
+    <script src="{{ url_for('static', filename = 'homeworkcontent.js')}}"></script>
 </html>
