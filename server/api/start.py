@@ -116,21 +116,25 @@ def homeworkcontent(courseName,hwName):
     userID=jwt.readToken()["userID"]
     authorization,courses=verify_user_authorization_courses(userID)
     if(courseName in courses):
-        sql="SELECT homeworkName,homeworkInfo,txtName,score,score2,score3 FROM "+courseName+"_HW  WHERE homeworkName=\""+hwName+"\""
+        sql="SELECT homeworkName,homeworkInfo,txtName,txtName2,txtName3,score,score2,score3 FROM "+courseName+"_HW  WHERE homeworkName=\""+hwName+"\""
         hw_result=db.query(sql,True)
         score=None
         if authorization=="0":
             sql="SELECT "+hwName+" FROM "+courseName+"  WHERE `userID`=\""+userID+"\""
             score=db.query(sql,True)
-            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=1 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=2 "
             status=db.query(sql,True)
         else:    
-            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=1 "
             status=db.query(sql,True)
+        upload_datetime=None
+        if(len(status)==1):
+            upload_datetime=datetime.strftime(status[0]["datetime"], '%Y-%m-%d %H:%M:%S')
         print(authorization)
         print(status)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status)
+        print(upload_datetime)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
 
 @app.route("/remote/getStatus")
 @jwt_required()
