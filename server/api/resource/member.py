@@ -79,7 +79,9 @@ class member(Resource):
         self.db_handler.query(sql,False)
         self.sql="SELECT course FROM user WHERE `userID` =\""+userID+"\""
         print(self.sql)
-        member_courses=self.db_handler.query(self.sql,True)[0]["course"].split("/").remove(courseName)
+        member_courses=self.db_handler.query(self.sql,True)[0]["course"].split("/")
+        print(member_courses)
+        member_courses.remove(courseName)
         if(len(member_courses)!=0):
             self.sql="UPDATE user SET course=\""+"/".join(member_courses)+"\" WHERE `userID` = \""+userID+"\""
         else:
