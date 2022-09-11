@@ -55,7 +55,7 @@ def unauthorized_callback(callback):
 
 @app.route("/test")
 def testUP():
-    return render_template("test.html")
+    return render_template("test.html",obj=[{"test":"test"}])
 
 
 ##登入頁面
@@ -67,7 +67,12 @@ def index():
 @app.route("/remote")
 @jwt_required()
 def remote():
-    return render_template("remote.html")
+    jwt=JWT_handler()
+    db=DBhandler()
+    userID=jwt.readToken()["userID"]
+    sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\""
+    status=db.query(sql,True)
+    return render_template("remote.html",status=status)
 
 ##使用者選課程的頁面
 @app.route("/course")
@@ -113,10 +118,42 @@ def homeworkcontent(courseName,hwName):
         if authorization=="0":
             sql="SELECT "+hwName+" FROM "+courseName+"  WHERE `userID`=\""+userID+"\""
             score=db.query(sql,True)
+            sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=1 "
+            status=db.query(sql,True)
+        else:    
+            sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
+            status=db.query(sql,True)
         print(authorization)
+        print(status)
         print(hw_result)
-        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,userID=userID)
+        return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status)
 
+@app.route("/remote/getStatus")
+@jwt_required()
+def getStatus():
+    db=DBhandler()
+    userID=jwt.readToken()["userID"]
+    sql="SELECT 'status' FROM userstatus WHERE `userID`=\""+userID+"\""
+    status=db.query(sql,True)
+    return status
+
+@app.route("/course/<string:courseName>/<string:hwName>/getUpdateStatus")
+@jwt_required()
+def getUpdateStatus(courseName,hwName):
+    db=DBhandler()
+    sql="SELECT 'status' FROM userstatus WHERE className=\""+courseName+"\" and `hwName`=\""+hwName+"\" workType=1"
+    return db.query(sql,True)
+
+@app.route("/course/<string:courseName>/<string:hwName>/getSummitStatus")
+@jwt_required()
+def getSummitStatus(courseName,hwName):
+    db=DBhandler()
+    sql="SELECT 'status' FROM userstatus WHERE className=\""+courseName+"\" and `hwName`=\""+hwName+"\" workType=2"
+    return db.query(sql,True)
+
+    
+
+    
 
 ##回傳遠端燒錄的檔案載點
 
