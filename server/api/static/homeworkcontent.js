@@ -55,7 +55,7 @@ function A1_upload_file() {
     let formData = new FormData();
     formData.append('workType', 1);
     formData.append('className', $('#courseName').text().split(":")[1]);
-    formData.append('homeworkName', $('#oldhomeworkName').val());
+    formData.append('homeworkName', $('#oldhomeworkName').text());
     formData.append('pgvFile', document.getElementById('pgv1').files[0]);
     formData.append('pgvFile2', document.getElementById('pgv2').files[0]);
     formData.append('pgvFile3', document.getElementById('pgv3').files[0]);

@@ -142,7 +142,7 @@
                             <td>
                             <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName}}" download>公開測資pgv檔案</a>
                             </td>
-                            {% if status.status ==0   %}
+                            {% if status[0].status ==0   %}
                             <td>公開測資law檔</td>
                             {% else %}            
                             <td>
@@ -208,10 +208,10 @@
                             <a href="/staticFile/{{courseName}}/{{homework.homeworkName}}/{{homework.txtName|replace('pgv','law')}}" download>公開測資law檔</a>                
                             </td>
                             <td>
-                                {% if status.status == 0 %}
-                                    我產生的law檔
+                                {% if status[0].status == 1%}
+                                <a href="/activeFile/{{courseName}}/{{homework.homeworkName}}/{{userID}}/{{homework.txtName|replace('pgv','law')}}" download>我產生的law檔</a> 
                                 {% else %}
-                                    <a href="/activeFile/{{courseName}}/{{homework.homeworkName}}/{{userID}}/{{homework.txtName|replace('pgv','law')}}" download>我產生的law檔</a> 
+                                我產生的law檔                                
                                 {% endif %}
                             </td>
                         </tr>
@@ -220,7 +220,7 @@
                             <th>隱藏測資1</th>
                             <th>隱藏測資2</th>
                         </tr>
-                        {% if status.status == 1 %}
+                        {% if status[0].status == 1 %}
                             <tr>
                                 <td>{{score.test}}</td>
                                 <td>{{score.test2}}</td>

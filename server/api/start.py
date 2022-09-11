@@ -9,6 +9,7 @@ from common.mailSender import mail_sender
 from flask_jwt_extended import  JWTManager,jwt_required
 from werkzeug.security import generate_password_hash
 from datetime import datetime
+import json
 
 '''--------------------------------------
     import api所提供的resouce file
@@ -134,7 +135,8 @@ def homeworkcontent(courseName,hwName):
         print(status)
         print(hw_result)
         print(upload_datetime)
-        return render_template("homeworkcontent.html",userID=userID,authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
+        print(score[0]["test"])
+        return render_template("homeworkcontent.html",userID=userID,authorization=authorization,homework=hw_result[0],courseName=courseName,score=json.loads(score[0]["test"]),status=status,time=upload_datetime)
 
 @app.route("/remote/getStatus")
 @jwt_required()

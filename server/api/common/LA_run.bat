@@ -1,2 +1,2 @@
-cd C:\git-repos\ours\CloudLab\server\file\·L¿n¤À\eeee
-C:\git-repos\ours\CloudLab\server\api\common\programming\LA_run_0\bin\Debug\C_Sharp.exe C:\git-repos\ours\CloudLab\server\file\·L¿n¤À\eeee decoder2to4 0
+cd C:\git-repos\ours\CloudLab\server\file\·L¿n¤À\test\00857138
+C:\git-repos\ours\CloudLab\server\api\common\programming\LA_run_0\bin\Debug\C_Sharp.exe C:\git-repos\ours\CloudLab\server\file\·L¿n¤À\test\00857138 decoder2to4 1
