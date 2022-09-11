@@ -14,9 +14,9 @@ import threading
 # 處理import DBhandler
 sys.path.insert(1, 'C:\\git-repos\\ours\\CloudLab\\server')
 
-from api.common.JWT_handler import JWT_handler
+from common.JWT_handler import JWT_handler
 from flask_jwt_extended import jwt_required
-from api.common.DBhandler import DBhandler
+from common.DBhandler import DBhandler
 from werkzeug.utils import secure_filename
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -189,23 +189,24 @@ class ProgrammingTest_without_hardware(Resource):
             elif(type == 1):
                 cName = className
                 hName = homeworkName
-                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + " and workType = '1' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
+                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + "' and workType = '1' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
             else:
                 cName = className
                 hName = homeworkName
-                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + " and workType = '2' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
+                sqlStatement = "SELECT * FROM userStatus WHERE userID = '" + userID + "' and workType = '2' and className = '" + className + "' and homeworkName = '" + homeworkName + "';"
 
             result = db.query(sqlStatement,True)
+            # print("result:" + str(result))
             #取得目前時間
             dt = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             if(len(result) == 0):
                 if(type == 0):
-                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','0',NULL,NULL,'" + dt + "');"
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + str(userID) + "','" + str(status) + "','0',NULL,NULL,'" + dt + "');"
                 elif(type == 1):
-                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','1','" + cName + "','" + hName + "','" + dt + "');"
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + str(userID) + "','" + str(status) + "','1','" + cName + "','" + hName + "','" + dt + "');"
                 else:
-                    sqlStatement = "INSERT INTO userStatus VALUES('" + userID + "','" + status + "','2','" + cName + "','" + hName + "','" + dt + "');"
+                    sqlStatement = "INSERT INTO userStatus VALUES('" + str(userID) + "','" + str(status) + "','2','" + cName + "','" + hName + "','" + dt + "');"
             else:
                 if(type == 0):
                     sqlStatement = "UPDATE userStatus SET `status` = '{}', `datetime` = '{}' WHERE userID = '{}' and workType = '0';".format(status,dt,userID)
@@ -214,14 +215,14 @@ class ProgrammingTest_without_hardware(Resource):
                 else:
                     sqlStatement = "UPDATE userStatus SET `status` = '{}', `datetime` = '{}' WHERE userID = '{}' and workType = '2' and className = '{}' and homeworkName = '{}';".format(status,dt,userID,cName,hName)
 
-            print("The sqlStatement:" + sqlStatement)
+            # print("The sqlStatement:" + sqlStatement)
             db.query(sqlStatement,False)
                     # db.query("INSERT INTO `orderQueue` VALUES('','0','" + userID + "')",False)
             del db
             
 
 
-
+        writeStatusIntoSql(workType,0)
         # 設定上傳檔案的路徑
         if(workType == 0):     # 0:單純燒錄
             # i用來決定要燒幾次
@@ -543,6 +544,7 @@ class ProgrammingTest_without_hardware(Resource):
         # time.sleep(15)
         # sem.release()
         print("out of sem!")
+        writeStatusIntoSql(workType,1)
         # print("The floder: " + UPLOAD_FOLDER)
 
         
@@ -570,16 +572,16 @@ class ProgrammingTest_without_hardware(Resource):
                 content.attach(MIMEText("您的作業上傳失敗!!\n請再重新上傳一次"))  #郵件內容
         # ckystilkvgqxnodh
 
-        # with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
-        #     try:
-        #         smtp.ehlo()  # 驗證SMTP伺服器
-        #         smtp.starttls()  # 建立加密傳輸
-        #         smtp.login("oceanremotelab@gmail.com", "ckystilkvgqxnodh")  # 登入寄件者gmail
-        #         smtp.send_message(content)  # 寄送郵件
-        #         print("Email complete!")
-        #     except Exception as e:
-        #         emailMsg = "But email failed!"
-        #         print("Email Error message: ", e)    
+        with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
+            try:
+                smtp.ehlo()  # 驗證SMTP伺服器
+                smtp.starttls()  # 建立加密傳輸
+                smtp.login("oceanremotelab@gmail.com", "ckystilkvgqxnodh")  # 登入寄件者gmail
+                smtp.send_message(content)  # 寄送郵件
+                print("Email complete!")
+            except Exception as e:
+                emailMsg = "But email failed!"
+                print("Email Error message: ", e)    
         ###
 
         # print("\ngo to the program end!!\n")
