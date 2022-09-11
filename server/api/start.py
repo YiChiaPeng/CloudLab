@@ -116,7 +116,7 @@ def homeworkcontent(courseName,hwName):
     userID=jwt.readToken()["userID"]
     authorization,courses=verify_user_authorization_courses(userID)
     if(courseName in courses):
-        sql="SELECT homeworkName,homeworkInfo,txtName,score,score2,score3 FROM "+courseName+"_HW  WHERE homeworkName=\""+hwName+"\""
+        sql="SELECT homeworkName,homeworkInfo,txtName,txtName2,txtName3,score,score2,score3 FROM "+courseName+"_HW  WHERE homeworkName=\""+hwName+"\""
         hw_result=db.query(sql,True)
         score=None
         if authorization=="0":
@@ -133,6 +133,7 @@ def homeworkcontent(courseName,hwName):
         print(authorization)
         print(status)
         print(hw_result)
+        print(upload_datetime)
         return render_template("homeworkcontent.html",authorization=authorization,homework=hw_result[0],courseName=courseName,score=score,status=status,time=upload_datetime)
 
 @app.route("/remote/getStatus")

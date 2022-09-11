@@ -80,7 +80,7 @@ class homework(Resource):
         parser.add_argument("score2")
         parser.add_argument("score3")
         arg=parser.parse_args()
-        self.sql="SELECT authorization,course FROM user where userID =\""+user['userID']+"\""
+        self.sql="SELECT authorization,course FROM user where `userID` = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
         course_result=user[0]["course"].split("/")
         if user[0]["authorization"]=="1" and len(course_result)!=0 and (arg["courseName"] in user[0]["course"].split("/")):
@@ -103,8 +103,7 @@ class homework(Resource):
         self.sql="SELECT authorization,course FROM user where userID = \""+user['userID']+"\""
         user=self.db.query(self.sql,True)
         if user[0]["authorization"]=="1"  and (arg["courseName"] in user[0]["course"].split("/")):
-            sql="DELETE FROM "+arg["courseName"]+"_HW WHERE homeworkName =\""+arg["homeworkName"]+"\""
-            print(sql)
+            sql="DELETE FROM "+arg["courseName"]+"_HW WHERE `homeworkName` =\""+arg["homeworkName"]+"\""
             self.db.query(sql,False)
             return {
                 "success":"t",
