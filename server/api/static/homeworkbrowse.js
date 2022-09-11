@@ -1,6 +1,6 @@
 var token = document.cookie.split(";" )[0];
 var currentCookie = token.split("=")[1];
-
+//新增作業
 function do_addHomework() {
     $.ajax({
         type: 'POST',
@@ -23,7 +23,7 @@ function do_addHomework() {
         }
     })
 }
-
+//新增學生
 function do_addMember() {
     let formData = new FormData();
     formData.append('file', document.getElementById('csvFile').files[0]);
@@ -49,37 +49,34 @@ function do_addMember() {
     })
 }
 
-//NewhomeworkDialog
+//顯示新增作業視窗
 function show_Newhomework_Dialog() {
     document.getElementsByClassName('dialog')[0].showModal();
 }
-
+//提交新增作業內容
 function summit_NewHomework() {
     do_addHomework();
     document.getElementsByClassName('dialog')[0].close();
     location.reload();
 }
-
+//關閉新增作業視窗
 function newhomework_Close() {
     location.reload();
 }
 
-//MemberDialog
+//顯示新增學生視窗
 function show_Member_Dialog() {
     document.getElementById('members').showModal();
 }
-
+//提交新增學生內容
 function summit_Member() {
     do_addMember();
-    //document.getElementById('members').close();
-    //location.reload();
 }
-
+//關閉新增學生視窗
 function member_Close() {
-    location.reload();
+    document.getElementById('members').close();
 }
-
-
+//刪除學生
 function delete_member(userID) {
     $.ajax({
         url:"/api/member",
@@ -94,11 +91,10 @@ function delete_member(userID) {
         success:function (response){
             var select="#member_"+userID;
             $(select).empty()
-
         }
     })
 }
-
+//解散課程
 function delete_Course_Check() {
     var dccMessage = confirm("確定要解散課程 ? ");
     if (dccMessage==true) {

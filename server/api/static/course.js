@@ -1,3 +1,4 @@
+//新增課程
 function do_addCourse() {
     var token = document.cookie.split(";" )[0];
     var currentCookie = token.split("=")[1];

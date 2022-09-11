@@ -122,10 +122,10 @@ def homeworkcontent(courseName,hwName):
         if authorization=="0":
             sql="SELECT "+hwName+" FROM "+courseName+"  WHERE `userID`=\""+userID+"\""
             score=db.query(sql,True)
-            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=1 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=2 "
             status=db.query(sql,True)
         else:    
-            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workTyoe`=2 "
+            sql="SELECT status,datetime FROM userstatus WHERE `userID`=\""+userID+"\" and `homeworkName`=\""+hwName+"\" and `className`=\""+courseName+"\" and `workType`=1 "
             status=db.query(sql,True)
         upload_datetime=None
         if(len(status)==1):

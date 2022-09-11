@@ -1,27 +1,25 @@
-//燒錄
+//獲取cookie
 var token = document.cookie.split(";" )[0];
 var currentCookie = token.split("=")[1];
-
+//sof上傳 - 視覺變化
 function do_sofupload() {
     $("#sofupload").empty();
     $("#sofupload").append(SofUploadForm);
 }
-
+//監聽sof檔是否上傳
 document.getElementById("soffile").addEventListener("change", function() {
     do_sofupload();
-    console.log(this.value);
 })
-
+//pgv上傳 - 視覺變化
 function do_pgvupload() {
     $("#pgvupload").empty();
     $("#pgvupload").append(PgvUploadForm);
 }
-
+//監聽pgv檔是否上傳
 document.getElementById("pgvfile").addEventListener("change", function() {
     console.log(this.value);
-    do_pgvupload();
 })
-
+//送出上傳內容
 function do_pay() {
     let formData = new FormData();
     formData.append('sofFile', document.getElementById('soffile').files[0]);

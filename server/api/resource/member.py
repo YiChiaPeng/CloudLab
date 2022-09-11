@@ -25,8 +25,9 @@ class member(Resource):
         courseName=request.form.get("courseName")
         path="../file/user.csv"
         userID=self.jwt_handler.readToken()["userID"]
-        sql="SELECT authorization,course FROM `user` WHERE `userID`={}".format(userID)
+        sql="SELECT authorization,course FROM `user` WHERE `userID`=\"{}\"".format(userID)
         result=self.db_handler.query(sql,True)
+        print(sql)
         if( len(result)==0 or result[0]["authorization"]!="1" or (courseName not in result[0]["course"].split("/")) ):
             return {
                 "message":"you can't do this"

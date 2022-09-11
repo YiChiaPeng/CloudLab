@@ -25,31 +25,37 @@ function changeHomeworkContent() {
 }
 //刪除作業
 function delete_homeworkcontent() {
-    $.ajax({
-        type: 'delete',
-        url: '/api/homework',
-        headers: {
-            'Authorization': 'Bearer ' + currentCookie,
-            'Content-Type' : 'application/json' 
-        },
-        data: JSON.stringify({
-            courseName: $('#courseName').text().split(":")[1],
-            homeworkName: $('#oldhomeworkName').text()
-        }),
-        success: function(response){
-            if (response.success == 't'){
-                alert(response.message);
-                window.location.href = '/course/' + $('#courseName').text().split(":")[1];
+    var dccMessage = confirm("確定要解散課程 ? ");
+    if (dccMessage==true) {
+        $.ajax({
+            type: 'delete',
+            url: '/api/homework',
+            headers: {
+                'Authorization': 'Bearer ' + currentCookie,
+                'Content-Type' : 'application/json' 
+            },
+            data: JSON.stringify({
+                courseName: $('#courseName').text().split(":")[1],
+                homeworkName: $('#oldhomeworkName').text()
+            }),
+            success: function(response){
+                if (response.success == 't'){
+                    alert(response.message);
+                    window.location.href = '/course/' + $('#courseName').text().split(":")[1];
+                }
             }
-        }
-    })
+        })
+    }
+    else {
+        
+    }
 }
-//上傳檔案
-function upload_file() {
+//高權限上傳檔案
+function A1_upload_file() {
     let formData = new FormData();
     formData.append('workType', 1);
     formData.append('className', $('#courseName').text().split(":")[1]);
-    formData.append('homeworkName', $('#homeworkName').val());
+    formData.append('homeworkName', $('#oldhomeworkName').val());
     formData.append('pgvFile', document.getElementById('pgv1').files[0]);
     formData.append('pgvFile2', document.getElementById('pgv2').files[0]);
     formData.append('pgvFile3', document.getElementById('pgv3').files[0]);
@@ -57,6 +63,26 @@ function upload_file() {
     formData.append('score', $('#score1').val());
     formData.append('score2', $('#score2').val());
     formData.append('score3', $('#score3').val());
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/ProgrammingRequest',
+        headers: {
+            'Authorization': 'Bearer ' + currentCookie
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response){}
+    })
+}
+//低權限檔案上傳
+function A0_upload_file() {
+    let formData = new FormData();
+    formData.append('workType', 2);
+    formData.append('className', $('#courseName').text().split(":")[1]);
+    formData.append('homeworkName', $('#oldhomeworkName').text());
+    formData.append('sofFile', document.getElementById('sof1').files[0]);
 
     $.ajax({
         type: 'POST',

@@ -78,7 +78,7 @@
                         </form>
                     </dialog>
                     <input type="button" style="position: fixed; top: 95px; left: 1310px;" class="btn btn-danger" onclick="delete_homeworkcontent()" value="刪除作業">
-                    {% endif%}
+                    {% endif %}
                     <table class="table" style="position: fixed; top: 135px; left: 160px; width: 1216px;">
                         <tr>
                             <th style="font-size: 20px; width: 100px;">作業標題</th>
@@ -99,7 +99,7 @@
                                 <input type="file" id="pgv1" accept=".pgv" value="上傳公開測資">
                                 <input type="file" id="pgv2" accept=".pgv" value="上傳隱藏測資1">
                                 <input type="file" id="pgv3" accept=".pgv" value="上傳隱藏測資2">
-                                {% endif%}
+                                {% endif %}
                                 <input type="file" id="sof1" accept=".sof" value="上傳sof">
                                 {% if authorization == '1' %}
                                 <td>
@@ -107,12 +107,16 @@
                                     <input type="text" class="form-control" id="score2" placeholder="隱藏測資1配分">
                                     <input type="text" class="form-control" id="score3" placeholder="隱藏測資2配分">
                                 </td>
-                                {% endif%}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <input type="button" class="btn btn-primary mb-2" onclick="upload_file()" value="提交">
+                                {% if authorization == '1' %}
+                                <input type="button" class="btn btn-primary mb-2" onclick="A1_upload_file()" value="提交">
+                                {% else %}
+                                <input type="button" class="btn btn-primary mb-2" onclick="A0_upload_file()" value="提交">
+                                {% endif %}
                             </td>
                         </tr>
                     </table>
@@ -122,31 +126,51 @@
                             <td colspan="2"></td>
                         </tr>
                         <tr>
-                            <th>sof檔連結</th>
-                            <td colspan="2"></td>
-                        </tr>
-                        <tr>
                             <th>pgv檔連結</th>
                             <th>law檔連結</th>
                             <th>配分</th>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            <td>
+                                <a download href="/file/pgv">公開測資</a>
+                            </td>
+                            <td>
+                                <a download href="/file/law">公開測資</a>
+                            </td>
+                            <td>
+                                {{homework.score}}
+                            </td>
                         </tr>
                         {% if authorization == '1' %}
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
+                            <td>
+                                <a download href="/file/pgv">隱藏測資1</a>
+                            </td>
+                            <td>
+                                <a download href="/file/law">隱藏測資1</a>
+                            </td>
                             <td>3</td>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
+                            <td>
+                                <a download href="/file/pgv">隱藏測資2</a>
+                            </td>
+                            <td>
+                                <a download href="/file/law">隱藏測資2</a>
+                            </td>
                             <td>3</td>
                         </tr>
                         {% endif %}
+                        <tr>
+                            <th>公開測資</th>
+                            <th>隱藏測資1</th>
+                            <th>隱藏測資2</th>
+                        </tr>
+                        <tr>
+                            <td>分數</td>
+                            <td>分數</td>
+                            <td>分數</td>
+                        </tr>
                     </table>
                 </div>
             </div>
